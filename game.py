@@ -43,7 +43,7 @@ def get_palabra_oculta(lista):
 # Retorna la palabra ingresada por el usuario
 # Obs.: solamente retorna si la palabra cumple con una longitud dada
 def get_palabra(cantidad_caracteres):
-    palabra = input(f"Ingrese una palabra de {cantidad_caracteres}")
+    palabra = input(f"Ingrese una palabra de {cantidad_caracteres} caracteres.")
     while not len(palabra) == cantidad_caracteres:
         separador()
         print(f"{ansi_color_rojo}Error{ansi_end}: la longitud ingresada de la palabra debe ser {cantidad_caracteres}.\nPalabra: {palabra}, longitud: {len(palabra)}")
