@@ -91,7 +91,7 @@ estados = ('pendiente', 'en progreso', 'completada')
 
 # Acciones del Menu principal
 # acciones_del_menu = ('agregar', 'modificar', 'eliminar', 'mostrar', 'salir')
-menu = {1:'agregar', 2:'modificar', 3:'eliminar', 4:'mostrar', 0:'salir'}
+menu = {1:'agregar', 2:'modificar', 3:'eliminar', 4:'mostrar', 5: 'Cambiar nombre usuario', 0:'salir'}
 
 # cantidad de caracteres a imprimir para
 # la separacion de contendios
@@ -124,8 +124,8 @@ def print_estados(estados):
     print('-' * len_caracter)
 
 # Retorna el nombre de usuario para el registro
-def get_username():
-    nombre = input(f"{Back.YELLOW} Ingrese su nombre {Style.RESET_ALL}: ")
+def get_username(msg="Ingrese su nombre"):
+    nombre = input(f"{Back.YELLOW} {msg} {Style.RESET_ALL}: ")
 
     if nombre == '':
         nombre = "persona"
@@ -308,7 +308,7 @@ while True:
         # Muestra el título de la interfaz actual
         print_title(title)
 
-        tarea = input("Ingrese la tarea a eliminar: ")
+        tarea = input(f"{Back.YELLOW}Ingrese la tarea a eliminar{Style.RESET_ALL}: ")
                 
         # Verifica si la tarea fue eliminada correctamente
         if obj_registro.delete_tarea(tarea):
@@ -331,4 +331,24 @@ while True:
         if return_menu():
             clear_window()
             print_menu(menu, nombre)
+    
+    # Cambia el nombre del usuario
+    elif opcion_menu == 5:
+        # Limpia la terminal
+        clear_window()        
 
+        # Título de la interfaz actual
+        title = "cambiar nombre de usuario"
+
+        # Muestra el título de la interfaz actual
+        print_title(title)
+
+        # nombre_nuevo = input(f"{Back.YELLOW}Ingrese el nuevo nombre del usuario{Style.RESET_ALL}: ")
+        nombre = get_username("Ingrese el nuevo nombre del usuario")
+        obj_registro.set_name = nombre
+
+        clear_window()
+        print(f"{Back.GREEN}Nombre cambiado con exito.{Style.RESET_ALL}")
+        waiting_msg()
+        clear_window()
+        print_menu(menu, nombre)
