@@ -1,2 +1,4 @@
 jupyterlab
 colorama
+Flask
+Flask-SQLAlchemy
