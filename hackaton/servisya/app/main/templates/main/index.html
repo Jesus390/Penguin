@@ -1,0 +1,12 @@
+
+{% extends 'base.html' %}
+    
+{% block title %}ServiYa{% endblock%}
+
+{% block content %}
+    <h1>Hola</h1>
+    <hr>
+    <form method="GET" action="{{ url_for('main.search') }}">
+        <input type="text" name="q" placeholder="Buscar por profesión" required>
+    <button type="submit">Buscar</button>
+{% endblock %}

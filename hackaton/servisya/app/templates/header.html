@@ -1,0 +1,25 @@
+
+<header class="flex justify-between p-8 bg-red-50">
+    <div class="text-3xl">ServiYa</div>
+    <div>
+
+        <ul class="flex justify-between">
+            <li class="p-2 m-3 bg-black text-white rounded-lg">
+                <a class="p-12" href="#">Unete como Profesional</a>
+            </li>
+            
+            {% if current_user.is_authenticated %}
+                <li><a href="{{ url_for('auth.logout') }}">Cerrar sesión</a></li>
+            {% else %}
+                <li class="p-2 m-3">
+                    <a href="{{ url_for('auth.login') }}">Login</a>                
+                </li>
+                <li class="p-2 m-3">
+                    <a href="{{ url_for('auth.register') }}">Registro</a>
+                </li>
+            {% endif %}
+
+        </ul>
+
+    </div>
+</header>

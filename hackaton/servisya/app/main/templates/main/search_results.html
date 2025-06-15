@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h2>Resultados para: "{{ query }}"</h2>
+
+    {% if results %}
+        <ul>
+            {% for p in results %}
+                <li>
+                    {{ p.profession }} - {{ p.location }}<br>
+                    {{ p.user.username }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>No se encontraron profesionales.</p>
+    {% endif %}
+
+    <a href="{{ url_for('main.index') }}">Volver</a>
+
+</body>
+</html>

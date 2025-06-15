@@ -1,0 +1,25 @@
+<!-- <nav>
+    <ul>
+        <li><a href="/">Inicio</a></li>
+        <li><a href="/login">Login</a></li>
+        <li><a href="/register">Registrarme</a></li>
+    </ul>
+</nav> -->
+{% extends 'base.html' %}
+
+{% block title %}Registrarme{% endblock %}
+
+{% block content %}
+<h2>Registro</h2>
+<form method="POST">
+    <input name="username" placeholder="Usuario" required>
+    <input name="email" type="email" placeholder="Correo" required>
+    <input name="password" type="password" placeholder="Contraseña" required>
+    <select name="role">
+        <option value="user">Usuario</option>
+        <option value="professional">Profesional</option>
+        <option value="admin">Admin</option>
+    </select>
+    <button type="submit">Registrarse</button>
+</form>
+{% endblock %}
