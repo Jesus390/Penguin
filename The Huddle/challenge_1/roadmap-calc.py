@@ -1,13 +1,14 @@
-def crear_mapa(filas, columnas):
-    mapa = [['#' for _ in range(columnas)] for _ in range(filas)]
-    
+import random
 
+def crear_mapa(filas, columnas):
+    return [[' # ' for _ in range(columnas)] for _ in range(filas)]
+    
 def print_mapa(mapa):
     cantidad_borde = int(len(mapa[0]))
-    print(f"+{'='*cantidad_borde}+")
+    print(f"+{'='*((cantidad_borde*4)-1)}+")
     for row in mapa:
-        print(f"|{''.join(row)}|")
-    print(f"+{'='*cantidad_borde}+")
+        print(f"|{' '.join(row)}|")
+    print(f"+{'='*((cantidad_borde*4)-1)}+")
 
 def crear_caminos_cuadricula(mapa):
     if len(mapa) < 60:
@@ -25,14 +26,32 @@ def crear_caminos_cuadricula(mapa):
     for i in range(len(mapa)):
         for j in range(len(mapa[0])):
             if i % camino_filas == 0 and j % camino_columnas == 0:
-                mapa[i][j] = '+'
+                mapa[i][j] = ' + '
             elif j%camino_columnas == 0:
-                mapa[i][j] = '.'
+                mapa[i][j] = ' . '
             elif i%camino_filas == 0:
-                mapa[i][j] = '.'
+                mapa[i][j] = ' . '
 
-def agregar_obstaculos(mapa):
-    pass    
+def get_caminos(mapa):
+    caminos_disponibles = []
+    cantidad = 0
+    for i in range(len(mapa)):
+        for j in range(len(mapa[i])):
+            if mapa[i][j] == ' . ' or mapa[i][j] == ' + ':
+                caminos_disponibles.append((i, j))
+                cantidad += 1
+    return caminos_disponibles, cantidad
+
+def agregar_obstaculos(mapa, caminos_disponibles):
+    tmp_caminos_disponibles = caminos_disponibles[0].copy()
+    cantidad_obstaculos = caminos_disponibles[1] * 0.02
+    for _ in range(int(cantidad_obstaculos)):
+        x = random.choice(tmp_caminos_disponibles)
+        tmp_caminos_disponibles.pop(tmp_caminos_disponibles.index(x))
+        mapa[x[0]][x[1]] = random.choice(['🧱 ', '🚧 ', '🪨 ', '🌊 '])
+    # print(caminos_disponbiles[1])
+    # print(cantidad_obstaculos)
+
 
 def mostrar_valores(mapa):
     '''
@@ -45,23 +64,22 @@ def mostrar_valores(mapa):
     tmp_mapa = mapa.copy()
     for i in range(len(tmp_mapa)):
         for j in range(len(tmp_mapa[0])):
-            if tmp_mapa[i][j] == '.' or tmp_mapa[i][j] == '+':
+            if tmp_mapa[i][j] == ' . ' or tmp_mapa[i][j] == ' + ':
                 tmp_mapa[i][j] = str(0)
-            elif tmp_mapa[i][j] == '#':
+            elif tmp_mapa[i][j] == ' # ':
                 tmp_mapa[i][j] = str(1)
 
     print_mapa(tmp_mapa)
-def agregar_terrenos():
-    pass
-
-
 
 # Ejemplo de uso de la función map
 if __name__ == "__main__":
     filas = 15
-    columnas = 50
+    columnas = 30
     mapa = crear_mapa(filas, columnas)
     crear_caminos_cuadricula(mapa)
     print_mapa(mapa)
-    mostrar_valores(mapa)
+    caminos_disponbiles = get_caminos(mapa)
+    agregar_obstaculos(mapa, caminos_disponbiles)
+    print_mapa(mapa)
+    # mostrar_valores(mapa)
     # agregar_terrenos()
