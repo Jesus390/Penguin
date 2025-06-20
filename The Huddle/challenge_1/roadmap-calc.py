@@ -4,7 +4,8 @@ emojis = {
     "casa" : ['🏠'],
     "camino": ['🟫'],
     "arbol": ['🌳', '🌴', '🌻'],
-    "obstaculo": ['🚧', '🪨 ', '💧']
+    "obstaculo": ['🚧', '🪨 ', '💧'],
+    "jugador": ['🟢', '🔴']
 }
 
 def crear_mapa(filas, columnas):
@@ -49,7 +50,8 @@ def get_caminos(mapa):
                 cantidad += 1
     return caminos_disponibles, cantidad
 
-def agregar_obstaculos(mapa, caminos_disponibles):
+def agregar_obstaculos(mapa):
+    caminos_disponibles = get_caminos(mapa)
     cantidad_obstaculos = caminos_disponibles[1] * 0.04
     for _ in range(int(cantidad_obstaculos)):
         x = random.choice(caminos_disponibles[0])
@@ -60,24 +62,46 @@ def agregar_arbol(mapa):
     for i in range(len(mapa)):
         for j in range(len(mapa[i])):
             if mapa[i][j] == emojis['casa'][0]:
+                # obs.: validar si el indice existe
                 if mapa[i][j-1] == emojis['casa'][0] and \
-                        mapa[i][j+1] == emojis['casa'][0] and \
-                        mapa[i-1][j] == emojis['casa'][0] and \
-                        mapa[i+1][j] == emojis['casa'][0] and \
-                        mapa[i-1][j] == emojis['casa'][0]:
+                mapa[i-1][j] == emojis['casa'][0] and \
+                mapa[i-1][j] == emojis['casa'][0]:
                     mapa[i][j] = random.choice(emojis['arbol'])
+
+def inicio(mapa):
+    while True:
+        fila = int(input("Ingresa la fila donde deseas empezar: "))
+        columna = int(input("Ingresa la columna donde deseas empezar: "))
+        caminos_disponibles = get_caminos(mapa)
+        if fila >= 0 and fila < len(mapa) and columna >= 0 and columna < len(mapa[fila]) and mapa[fila][columna] == emojis['camino'][0]:
+            mapa[fila][columna] = emojis['jugador'][0]
+            break
+        print("Posicion no disponible.")
+
+def final(mapa):
+    while True:
+        fila = int(input("Ingresa la fila donde deseas finalizar: "))
+        columna = int(input("Ingresa la columna donde deseas finalizar: "))
+        caminos_disponibles = get_caminos(mapa)
+        if fila >= 0 and fila < len(mapa) and columna >= 0 and columna < len(mapa[fila]) and mapa[fila][columna] == emojis['camino'][0]:
+            mapa[fila][columna] = emojis['jugador'][1]
+            break
+        print("Posicion no disponible.")
+    
 
 # Algoritmos
 
 
 if __name__ == "__main__":
-    filas = 26
-    columnas = 41
+    filas = 31
+    columnas = 36
     mapa = crear_mapa(filas, columnas)
     print_mapa(mapa)
     crear_caminos_cuadricula(mapa)
     print_mapa(mapa)
-    caminos_disponbiles = get_caminos(mapa)
-    agregar_obstaculos(mapa, caminos_disponbiles)
+    agregar_obstaculos(mapa)
     agregar_arbol(mapa)
+    print_mapa(mapa)
+    inicio(mapa)
+    final(mapa)
     print_mapa(mapa)
