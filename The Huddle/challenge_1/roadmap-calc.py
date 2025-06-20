@@ -1,7 +1,14 @@
 import random
 
+emojis = {
+    "casa" : ['🏠'],
+    "camino": ['🟫'],
+    "arbol": ['🌳', '🌴', '🌻'],
+    "obstaculo": ['🚧', '🪨 ', '💧']
+}
+
 def crear_mapa(filas, columnas):
-    return [['🏠' for _ in range(columnas)] for _ in range(filas)]
+    return [[emojis['casa'][0] for _ in range(columnas)] for _ in range(filas)]
     
 def print_mapa(mapa):
     cantidad_borde = int(len(mapa[0]))
@@ -26,18 +33,18 @@ def crear_caminos_cuadricula(mapa):
     for i in range(len(mapa)):
         for j in range(len(mapa[0])):
             if i % camino_filas == 0 and j % camino_columnas == 0:
-                mapa[i][j] = '⬛'
+                mapa[i][j] = emojis['camino'][0]
             elif j%camino_columnas == 0:
-                mapa[i][j] = '⬛'
+                mapa[i][j] = emojis['camino'][0]
             elif i%camino_filas == 0:
-                mapa[i][j] = '⬛'
+                mapa[i][j] = emojis['camino'][0]
 
 def get_caminos(mapa):
     caminos_disponibles = []
     cantidad = 0
     for i in range(len(mapa)):
         for j in range(len(mapa[i])):
-            if mapa[i][j] == '⬛':
+            if mapa[i][j] == emojis['camino'][0]:
                 caminos_disponibles.append((i, j))
                 cantidad += 1
     return caminos_disponibles, cantidad
@@ -47,14 +54,18 @@ def agregar_obstaculos(mapa, caminos_disponibles):
     for _ in range(int(cantidad_obstaculos)):
         x = random.choice(caminos_disponibles[0])
         caminos_disponibles[0].pop(caminos_disponibles[0].index(x))
-        mapa[x[0]][x[1]] = random.choice(['🚧', '🪨 ', '💧'])
+        mapa[x[0]][x[1]] = random.choice(emojis['obstaculo'])
 
 def agregar_arbol(mapa):
     for i in range(len(mapa)):
         for j in range(len(mapa[i])):
-            if mapa[i][j] == '🏠':
-                if mapa[i][j-1] == '🏠' and mapa[i][j+1] == '🏠' and mapa[i-1][j] == '🏠' and mapa[i+1][j] == '🏠' and mapa[i-1][j] == '🏠':
-                    mapa[i][j] = random.choice(['🌳', '🌴', '🌻'])
+            if mapa[i][j] == emojis['casa'][0]:
+                if mapa[i][j-1] == emojis['casa'][0] and \
+                        mapa[i][j+1] == emojis['casa'][0] and \
+                        mapa[i-1][j] == emojis['casa'][0] and \
+                        mapa[i+1][j] == emojis['casa'][0] and \
+                        mapa[i-1][j] == emojis['casa'][0]:
+                    mapa[i][j] = random.choice(emojis['arbol'])
 
 # Algoritmos
 
