@@ -5,10 +5,10 @@ def crear_mapa(filas, columnas):
     
 def print_mapa(mapa):
     cantidad_borde = int(len(mapa[0]))
-    print(f"+{'='*((cantidad_borde*3)-1)}+")
+    print(f"+{'='*((cantidad_borde*3))}+")
     for row in mapa:
-        print(f"|{' '.join(row)}|")
-    print(f"+{'='*((cantidad_borde*3)-1)}+")
+        print(f"|{' '.join(row)} |")
+    print(f"+{'='*((cantidad_borde*3))}+")
 
 def crear_caminos_cuadricula(mapa):
     if len(mapa) < 60:
@@ -47,7 +47,14 @@ def agregar_obstaculos(mapa, caminos_disponibles):
     for _ in range(int(cantidad_obstaculos)):
         x = random.choice(caminos_disponibles[0])
         caminos_disponibles[0].pop(caminos_disponibles[0].index(x))
-        mapa[x[0]][x[1]] = random.choice(['🧱', '🚧', '🪨 ', '🌊'])
+        mapa[x[0]][x[1]] = random.choice(['🚧', '🪨 ', '💧'])
+
+def agregar_arbol(mapa):
+    for i in range(len(mapa)):
+        for j in range(len(mapa[i])):
+            if mapa[i][j] == '🏠':
+                if mapa[i][j-1] == '🏠' and mapa[i][j+1] == '🏠' and mapa[i-1][j] == '🏠' and mapa[i+1][j] == '🏠' and mapa[i-1][j] == '🏠':
+                    mapa[i][j] = random.choice(['🌳', '🌴', '🌻'])
 
 # Algoritmos
 
@@ -61,4 +68,5 @@ if __name__ == "__main__":
     print_mapa(mapa)
     caminos_disponbiles = get_caminos(mapa)
     agregar_obstaculos(mapa, caminos_disponbiles)
+    agregar_arbol(mapa)
     print_mapa(mapa)
