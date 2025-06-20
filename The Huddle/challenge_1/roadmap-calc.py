@@ -43,15 +43,17 @@ def get_caminos(mapa):
     return caminos_disponibles, cantidad
 
 def agregar_obstaculos(mapa, caminos_disponibles):
-    tmp_caminos_disponibles = caminos_disponibles[0].copy()
     cantidad_obstaculos = caminos_disponibles[1] * 0.02
     for _ in range(int(cantidad_obstaculos)):
-        x = random.choice(tmp_caminos_disponibles)
-        tmp_caminos_disponibles.pop(tmp_caminos_disponibles.index(x))
-        mapa[x[0]][x[1]] = random.choice(['🧱 ', '🚧 ', '🪨 ', '🌊 '])
-    # print(caminos_disponbiles[1])
-    # print(cantidad_obstaculos)
+        x = random.choice(caminos_disponibles[0])
+        caminos_disponibles[0].pop(caminos_disponibles[0].index(x))
+        mapa[x[0]][x[1]] = random.choice(['🧱 ', '🚧 ', '🪨  ', '🌊 '])
 
+def agregar_edificios(mapa):
+    for i in range(len(mapa)):
+        for j in range(len(mapa[i])):
+            if mapa[i][j] == ' # ':
+                mapa[i][j] = '🏠'
 
 def mostrar_valores(mapa):
     '''
@@ -80,6 +82,7 @@ if __name__ == "__main__":
     print_mapa(mapa)
     caminos_disponbiles = get_caminos(mapa)
     agregar_obstaculos(mapa, caminos_disponbiles)
+    agregar_edificios(mapa)
     print_mapa(mapa)
     # mostrar_valores(mapa)
     # agregar_terrenos()
