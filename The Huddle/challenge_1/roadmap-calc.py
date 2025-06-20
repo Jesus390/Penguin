@@ -1,14 +1,14 @@
 import random
 
 def crear_mapa(filas, columnas):
-    return [[' # ' for _ in range(columnas)] for _ in range(filas)]
+    return [['🏠' for _ in range(columnas)] for _ in range(filas)]
     
 def print_mapa(mapa):
     cantidad_borde = int(len(mapa[0]))
-    print(f"+{'='*((cantidad_borde*4)-1)}+")
+    print(f"+{'='*((cantidad_borde*3)-1)}+")
     for row in mapa:
         print(f"|{' '.join(row)}|")
-    print(f"+{'='*((cantidad_borde*4)-1)}+")
+    print(f"+{'='*((cantidad_borde*3)-1)}+")
 
 def crear_caminos_cuadricula(mapa):
     if len(mapa) < 60:
@@ -26,18 +26,18 @@ def crear_caminos_cuadricula(mapa):
     for i in range(len(mapa)):
         for j in range(len(mapa[0])):
             if i % camino_filas == 0 and j % camino_columnas == 0:
-                mapa[i][j] = ' + '
+                mapa[i][j] = '🗆 '
             elif j%camino_columnas == 0:
-                mapa[i][j] = ' . '
+                mapa[i][j] = '🗆 '
             elif i%camino_filas == 0:
-                mapa[i][j] = ' . '
+                mapa[i][j] = '🗆 '
 
 def get_caminos(mapa):
     caminos_disponibles = []
     cantidad = 0
     for i in range(len(mapa)):
         for j in range(len(mapa[i])):
-            if mapa[i][j] == ' . ' or mapa[i][j] == ' + ':
+            if mapa[i][j] == '🗆 ':
                 caminos_disponibles.append((i, j))
                 cantidad += 1
     return caminos_disponibles, cantidad
@@ -47,13 +47,12 @@ def agregar_obstaculos(mapa, caminos_disponibles):
     for _ in range(int(cantidad_obstaculos)):
         x = random.choice(caminos_disponibles[0])
         caminos_disponibles[0].pop(caminos_disponibles[0].index(x))
-        mapa[x[0]][x[1]] = random.choice(['🧱 ', '🚧 ', '🪨  ', '🌊 '])
-
-def agregar_edificios(mapa):
-    for i in range(len(mapa)):
-        for j in range(len(mapa[i])):
-            if mapa[i][j] == ' # ':
-                mapa[i][j] = '🏠'
+        mapa[x[0]][x[1]] = random.choice(['🧱', '🚧', '🪨 ', '🌊'])
+# def agregar_edificios(mapa):
+#     for i in range(len(mapa)):
+#         for j in range(len(mapa[i])):
+#             if mapa[i][j] == '#':
+#                 mapa[i][j] = '🏠'
 
 def mostrar_valores(mapa):
     '''
@@ -78,11 +77,11 @@ if __name__ == "__main__":
     filas = 15
     columnas = 30
     mapa = crear_mapa(filas, columnas)
+    print_mapa(mapa)
     crear_caminos_cuadricula(mapa)
     print_mapa(mapa)
     caminos_disponbiles = get_caminos(mapa)
     agregar_obstaculos(mapa, caminos_disponbiles)
-    agregar_edificios(mapa)
     print_mapa(mapa)
     # mostrar_valores(mapa)
     # agregar_terrenos()
