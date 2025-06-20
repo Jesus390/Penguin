@@ -26,56 +26,35 @@ def crear_caminos_cuadricula(mapa):
     for i in range(len(mapa)):
         for j in range(len(mapa[0])):
             if i % camino_filas == 0 and j % camino_columnas == 0:
-                mapa[i][j] = '🗆 '
+                mapa[i][j] = '⬛'
             elif j%camino_columnas == 0:
-                mapa[i][j] = '🗆 '
+                mapa[i][j] = '⬛'
             elif i%camino_filas == 0:
-                mapa[i][j] = '🗆 '
+                mapa[i][j] = '⬛'
 
 def get_caminos(mapa):
     caminos_disponibles = []
     cantidad = 0
     for i in range(len(mapa)):
         for j in range(len(mapa[i])):
-            if mapa[i][j] == '🗆 ':
+            if mapa[i][j] == '⬛':
                 caminos_disponibles.append((i, j))
                 cantidad += 1
     return caminos_disponibles, cantidad
 
 def agregar_obstaculos(mapa, caminos_disponibles):
-    cantidad_obstaculos = caminos_disponibles[1] * 0.02
+    cantidad_obstaculos = caminos_disponibles[1] * 0.04
     for _ in range(int(cantidad_obstaculos)):
         x = random.choice(caminos_disponibles[0])
         caminos_disponibles[0].pop(caminos_disponibles[0].index(x))
         mapa[x[0]][x[1]] = random.choice(['🧱', '🚧', '🪨 ', '🌊'])
-# def agregar_edificios(mapa):
-#     for i in range(len(mapa)):
-#         for j in range(len(mapa[i])):
-#             if mapa[i][j] == '#':
-#                 mapa[i][j] = '🏠'
 
-def mostrar_valores(mapa):
-    '''
-    Usa valores para diferenciar terrenos:
-    0: Camino libre.
-    1: Edificio (obstáculo).
-    2: Agua (obstáculo con ruta alternativa).
-    3: Zonas bloqueadas temporalmente.
-    '''
-    tmp_mapa = mapa.copy()
-    for i in range(len(tmp_mapa)):
-        for j in range(len(tmp_mapa[0])):
-            if tmp_mapa[i][j] == ' . ' or tmp_mapa[i][j] == ' + ':
-                tmp_mapa[i][j] = str(0)
-            elif tmp_mapa[i][j] == ' # ':
-                tmp_mapa[i][j] = str(1)
+# Algoritmos
 
-    print_mapa(tmp_mapa)
 
-# Ejemplo de uso de la función map
 if __name__ == "__main__":
-    filas = 15
-    columnas = 30
+    filas = 26
+    columnas = 41
     mapa = crear_mapa(filas, columnas)
     print_mapa(mapa)
     crear_caminos_cuadricula(mapa)
@@ -83,5 +62,3 @@ if __name__ == "__main__":
     caminos_disponbiles = get_caminos(mapa)
     agregar_obstaculos(mapa, caminos_disponbiles)
     print_mapa(mapa)
-    # mostrar_valores(mapa)
-    # agregar_terrenos()
