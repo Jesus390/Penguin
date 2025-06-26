@@ -123,12 +123,31 @@ def final(mapa):
             break
         print("Posicion no disponible.")
     
-def get_nodos(mapa):
+def get_adj_matriz(mapa):
     '''obtiene los nodos del mapa'''
-    for i in range(len(mapa)):
-        for j in range(len(mapa[i])):
-            pass
+    # matriz de adjacencia
+    adj_matriz = []
 
+    # longitud fila, columna
+    len_fila = len(mapa)
+    len_columna = len(mapa[0])
+
+    # recorre la matriz
+    # agrega 1 si es un camino caso contrario 0
+    for i in range(len_fila):
+        fila = []
+        for j in range(len_columna):
+            if mapa[i][j] == camino_principal:
+                fila.append(1)
+            else:
+                fila.append(0)
+        adj_matriz.append(fila)
+    return adj_matriz
+
+def print_adj_matriz(adj_matriz):
+    '''imprime la matriz de adjacencia'''
+    for row in adj_matriz:
+        print(row)
 
 # Algoritmos
 
@@ -141,3 +160,4 @@ if __name__ == "__main__":
     agregar_obstaculos(mapa)
     agregar_arbol(mapa)
     print_mapa(mapa)
+    print_adj_matriz(get_adj_matriz(mapa))
