@@ -34,11 +34,11 @@ def print_mapa(mapa):
     cantidad_borde = int(len(mapa[0]))
 
     # imprime borde del mapa
-    print(f"+{'='*((cantidad_borde*3))}+")
+    print(f"+{'='*((cantidad_borde*2))}+")
     for row in mapa:
-        print(f"|{''.join(row)} |")
+        print(f"|{''.join(row)}|")
     # imprime borde del mapa
-    print(f"+{'='*((cantidad_borde*3))}+")
+    print(f"+{'='*((cantidad_borde*2))}+")
 
 def crear_caminos_cuadricula(mapa):
     '''Creamos un camino en el mapa'''
@@ -134,15 +134,10 @@ def get_nodos(mapa):
 
 
 if __name__ == "__main__":
-    filas = 10
-    columnas = 15
+    filas = 21
+    columnas = 26
     mapa = crear_mapa(filas, columnas)
-    print_mapa(mapa)
     crear_caminos_cuadricula(mapa)
-    print_mapa(mapa)
     agregar_obstaculos(mapa)
     agregar_arbol(mapa)
-    print_mapa(mapa)
-    # inicio(mapa)
-    # final(mapa)
     print_mapa(mapa)
