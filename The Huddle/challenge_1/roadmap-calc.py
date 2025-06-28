@@ -150,7 +150,9 @@ def print_adj_matriz(adj_matriz):
         print(row)
 
 # Algoritmos
-
+def dijkstra():
+    '''algoritmo de Dijkstra'''
+    pass
 
 if __name__ == "__main__":
     filas = 21
