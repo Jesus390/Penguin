@@ -1,5 +1,54 @@
 import random
+from heapq import heapify, heappop, heappush
 
+class Graph:
+    def __init__(self, graph: dict={}):
+        self.graph = graph
+
+    def distancias_cortas(self, source):
+        distancias = {node: float("inf") for node in self.graph}
+        distancias[source] = 0 # se inicializa la fuente en cero
+        
+        nodos_visitados = set()
+
+        pq = [(0, source)]
+        heapify(pq)
+
+        while pq:
+            distancia_actual, nodo_actual = heappop(pq)
+
+            if nodo_actual in nodos_visitados:
+                continue
+
+            nodos_visitados.add(nodo_actual)
+
+            for nodo_vecino, distancia_nodo_vecino in self.graph[nodo_actual].items():
+                distancia_aux = distancia_actual + distancia_nodo_vecino
+                if distancia_aux < distancias[nodo_vecino]:
+                    distancias[nodo_vecino] = distancia_aux
+                    heappush(pq, (distancia_aux, nodo_vecino))
+
+        predecesores = {node: None for node in self.graph}
+        for node, distancia in distancias.items():
+            for vecino, distancia_vecino in self.graph[node].items():
+                if distancias[vecino] == distancia + distancia_vecino:
+                    predecesores[vecino] = node
+
+        return distancias, predecesores
+    
+    def ruta_corta(self, source, target):
+        _, predecesores = self.distancias_cortas(source)
+
+        ruta = []
+        nodo_actual = target
+
+        while nodo_actual:
+            ruta.append(nodo_actual)
+            nodo_actual = predecesores[nodo_actual]
+
+        ruta.reverse()
+        return ruta
+    
 emojis = {
     "casa" : ['🏠'],
     "camino": {
@@ -107,7 +156,7 @@ def inicio(mapa):
         fila = int(input("Ingresa la fila donde deseas empezar: "))
         columna = int(input("Ingresa la columna donde deseas empezar: "))
         caminos_disponibles = get_caminos(mapa)
-        if fila >= 0 and fila < len(mapa) and columna >= 0 and columna < len(mapa[fila]) and mapa[fila][columna] == camino_principal:
+        if fila >= 0 and fila < len(mapa) and columna >= 0 and columna < len(mapa[0]) and mapa[fila][columna] == camino_principal:
             mapa[fila][columna] = emojis['jugador'][0]
             break
         print("Posicion no disponible.")
@@ -122,7 +171,26 @@ def final(mapa):
             mapa[fila][columna] = emojis['jugador'][1]
             break
         print("Posicion no disponible.")
-    
+
+def get_nodo_del_nodo_actual(nodo_actual, caminos):
+    movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    # caminos = get_caminos(mapa)
+    nodos_adyacentes = {}
+    for movimiento in movimientos:
+        nodo_siguiente = (nodo_actual[0]+movimiento[0], nodo_actual[1]+movimiento[1])
+        if nodo_siguiente in caminos:
+            nodos_adyacentes[nodo_siguiente] = 1
+    return nodos_adyacentes
+
+    print(get_caminos(mapa))
+
+def get_adj_dic(mapa):
+    caminos_disponibles = get_caminos(mapa)
+    graph = {}
+    for camino in caminos_disponibles[0]:
+        graph[camino] = get_nodo_del_nodo_actual(camino, caminos_disponibles[0])
+    return graph
+
 def get_adj_matriz(mapa):
     '''obtiene los nodos del mapa'''
     # matriz de adjacencia
@@ -160,4 +228,7 @@ if __name__ == "__main__":
     agregar_obstaculos(mapa)
     agregar_arbol(mapa)
     print_mapa(mapa)
-    print_adj_matriz(get_adj_matriz(mapa))
+    ady_graph = get_adj_dic(mapa)
+    dijkstra = Graph(ady_graph)
+    
+    dijkstra.ruta_corta(inicio, final)
