@@ -241,8 +241,8 @@ def agregar_obstaculos_manual(mapa):
         print('Ingrese un obstaculo.')
         fila = int(input('Ingrese la fila: '))
         columna = int(input('Ingrese la columna: '))
-        if 0 <= fila < fila_tmp or 0 <= columna < columna_tmp and mapa[fila_tmp][columna_tmp] == camino_principal:
-            mapa[fila][columna] == emojis['obstaculo'][0]
+        if 0 <= fila < fila_tmp or 0 <= columna < columna_tmp and mapa[fila][columna] == camino_principal:
+            mapa[fila][columna] = emojis['obstaculo'][0]
             break
 
 
@@ -273,6 +273,8 @@ if __name__ == "__main__":
     inicio = inicio(mapa)
     final = final(mapa)
     # print(dijkstra.graph)
+
+    print_mapa(mapa)
 
     # Obtenemos la ruta mas corta
     shortet_path = dijkstra.ruta_corta(inicio, final)
