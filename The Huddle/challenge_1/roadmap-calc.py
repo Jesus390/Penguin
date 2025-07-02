@@ -113,7 +113,7 @@ def crear_caminos_cuadricula(mapa):
     
     camino_filas = int(len(mapa)*x_filas)
     camino_columnas = int(len(mapa[0])*x_columnas)
-    print(camino_filas, camino_columnas, len(mapa), len(mapa[0]))
+    # print(camino_filas, camino_columnas, len(mapa), len(mapa[0]))
 
     for i in range(len(mapa)):
         for j in range(len(mapa[0])):
@@ -247,23 +247,40 @@ def agregar_obstaculos_manual(mapa):
 
 
 if __name__ == "__main__":
-    filas = 21
-    columnas = 26
+    filas, columnas = 21, 26
+    # Se crea el mapa
     mapa = crear_mapa(filas, columnas)
+    print_mapa(mapa)
     crear_caminos_cuadricula(mapa)
+    print_mapa(mapa)
     agregar_obstaculos(mapa)
+    print_mapa(mapa)
     agregar_arbol(mapa)
     print_mapa(mapa)
+
+    # Lista de adyacencia para Dijkstra
     ady_graph = get_adj_dic(mapa)
+
+    # Instancia de la clase que implementa
+    # el algoritmo dijkstra
     dijkstra = Graph(ady_graph)
 
-    # inicio = (0, 0)
-    # final = (20, 21)
+    # Coordenadas estaticas
+    # # inicio = (0, 0)
+    # # final = (20, 21)
+
+    # Ingreso manual de coordenadas
     inicio = inicio(mapa)
     final = final(mapa)
-    print(dijkstra.graph)
+    # print(dijkstra.graph)
+
+    # Obtenemos la ruta mas corta
     shortet_path = dijkstra.ruta_corta(inicio, final)
-    mapa = update_mapa(mapa, shortet_path)
+
+    # Se actualiza el mapa
+    update_mapa(mapa, shortet_path)
     print_mapa(mapa)
+
+    # Agregamos obstaculos de forma manual
     agregar_obstaculos_manual(mapa)
     print_mapa(mapa)
