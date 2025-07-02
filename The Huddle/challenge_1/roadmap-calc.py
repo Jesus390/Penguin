@@ -160,12 +160,14 @@ def inicio(mapa):
     '''agrega el punto de inicio al mapa'''
     while True:
         fila = int(input("Ingresa la fila donde deseas empezar: "))
+
         columna = int(input("Ingresa la columna donde deseas empezar: "))
         caminos_disponibles = get_caminos(mapa)
         if fila >= 0 and fila < len(mapa) and columna >= 0 and columna < len(mapa[0]) and mapa[fila][columna] == camino_principal:
-            mapa[fila][columna] = emojis['jugador'][0]
+            mapa[fila][columna] = emojis['partidas']['inicial']
             break
         print("Posicion no disponible.")
+    return (fila, columna)
 
 def final(mapa):
     '''agrega el punto de fin al mapa'''
@@ -174,9 +176,10 @@ def final(mapa):
         columna = int(input("Ingresa la columna donde deseas finalizar: "))
         caminos_disponibles = get_caminos(mapa)
         if fila >= 0 and fila < len(mapa) and columna >= 0 and columna < len(mapa[fila]) and mapa[fila][columna] == camino_principal:
-            mapa[fila][columna] = emojis['jugador'][1]
+            mapa[fila][columna] = emojis['partidas']['final']
             break
         print("Posicion no disponible.")
+    return (fila, columna)
 
 def get_nodo_del_nodo_actual(nodo_actual, caminos):
     movimientos = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -223,8 +226,25 @@ def print_adj_matriz(adj_matriz):
 
 def update_mapa(mapa, ruta):
     for i, j in ruta:
-        mapa[i][j] = camino_corto
+        if mapa[i][i] == emoji_inicio:
+            mapa[i][j] = emoji_inicio
+        elif mapa[i][j] == emoji_final:
+            mapa[i][j] = emoji_final
+        else:
+            mapa[i][j] = camino_corto
     return mapa
+
+def agregar_obstaculos_manual(mapa):
+    fila_tmp = len(mapa)
+    columna_tmp = len(mapa[0])
+    while True:
+        print('Ingrese un obstaculo.')
+        fila = int(input('Ingrese la fila: '))
+        columna = int(input('Ingrese la columna: '))
+        if 0 <= fila < fila_tmp or 0 <= columna < columna_tmp and mapa[fila_tmp][columna_tmp] == camino_principal:
+            mapa[fila][columna] == emojis['obstaculo'][0]
+            break
+
 
 if __name__ == "__main__":
     filas = 21
@@ -237,9 +257,13 @@ if __name__ == "__main__":
     ady_graph = get_adj_dic(mapa)
     dijkstra = Graph(ady_graph)
 
-    inicio = (0, 0)
-    final = (20, 21)
+    # inicio = (0, 0)
+    # final = (20, 21)
+    inicio = inicio(mapa)
+    final = final(mapa)
     print(dijkstra.graph)
     shortet_path = dijkstra.ruta_corta(inicio, final)
     mapa = update_mapa(mapa, shortet_path)
+    print_mapa(mapa)
+    agregar_obstaculos_manual(mapa)
     print_mapa(mapa)
