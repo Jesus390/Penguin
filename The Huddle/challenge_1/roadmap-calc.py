@@ -67,10 +67,16 @@ emojis = {
     },
     "arbol": ['🌳', '🌴', '🌻'],
     "obstaculo": ['🚧', '🪨 ', '💧'],
-    "jugador": ['🟢', '🔴']
+    "partidas": {
+        "inicial": '🟢', 
+        "final": '🔴'
+    }
 }
 
+emoji_inicio = emojis['partidas']['inicial']
+emoji_final = emojis['partidas']['final']
 camino_principal = emojis['camino']['cuadrado_blanco']
+camino_corto = emojis['camino']['cuadrado_negro']
 
 def crear_mapa(filas, columnas):
     '''Creamos un mapa con emojis con filas y columnas'''
@@ -182,8 +188,6 @@ def get_nodo_del_nodo_actual(nodo_actual, caminos):
             nodos_adyacentes[nodo_siguiente] = 1
     return nodos_adyacentes
 
-    print(get_caminos(mapa))
-
 def get_adj_dic(mapa):
     caminos_disponibles = get_caminos(mapa)
     graph = {}
@@ -217,8 +221,10 @@ def print_adj_matriz(adj_matriz):
     for row in adj_matriz:
         print(row)
 
-# Algoritmos
-
+def update_mapa(mapa, ruta):
+    for i, j in ruta:
+        mapa[i][j] = camino_corto
+    return mapa
 
 if __name__ == "__main__":
     filas = 21
@@ -230,5 +236,10 @@ if __name__ == "__main__":
     print_mapa(mapa)
     ady_graph = get_adj_dic(mapa)
     dijkstra = Graph(ady_graph)
-    
-    dijkstra.ruta_corta(inicio, final)
+
+    inicio = (0, 0)
+    final = (20, 21)
+    print(dijkstra.graph)
+    shortet_path = dijkstra.ruta_corta(inicio, final)
+    mapa = update_mapa(mapa, shortet_path)
+    print_mapa(mapa)
