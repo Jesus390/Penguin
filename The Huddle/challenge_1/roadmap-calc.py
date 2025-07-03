@@ -2,6 +2,7 @@ from heapq import heapify, heappop, heappush
 
 import random
 import os
+import time
 
 def clear():
     if os.name == 'nt':  # For Windows
@@ -165,7 +166,7 @@ def agregar_arbol(mapa):
                 mapa[i-1][j] == emojis['casa'][0]:
                     mapa[i][j] = random.choice(emojis['arbol'])
 
-def inicio(mapa):
+def marcar_punto_inicial(mapa):
     '''agrega el punto de inicio al mapa'''
     while True:
         fila = int(input("Ingresa la fila donde deseas empezar: "))
@@ -178,7 +179,7 @@ def inicio(mapa):
         print("Posicion no disponible.")
     return (fila, columna)
 
-def final(mapa):
+def marcar_punto_final(mapa):
     '''agrega el punto de fin al mapa'''
     while True:
         fila = int(input("Ingresa la fila donde deseas finalizar: "))
@@ -200,7 +201,7 @@ def get_nodo_del_nodo_actual(nodo_actual, caminos):
             nodos_adyacentes[nodo_siguiente] = 1
     return nodos_adyacentes
 
-def get_adj_dic(mapa):
+def crear_adyacencia_de_mapa(mapa):
     caminos_disponibles = get_caminos(mapa)
     graph = {}
     for camino in caminos_disponibles[0]:
@@ -272,11 +273,39 @@ def init_mapa(filas, columnas):
 
     return mapa
 
+def mostrar_ruta(mapa):
+    # Lista de adyacencia
+    lista_adyacencia = crear_adyacencia_de_mapa(mapa)
+
+    # Punto inicial
+    inicio = marcar_punto_inicial(mapa)
+    clear()
+    print_mapa(mapa)
+
+    # Punto final
+    fin = marcar_punto_final(mapa)
+    clear()
+    print_mapa(mapa)
+
+    print("Procesando camino ...")
+
+    # Instancia de la clase Graph, para el algoritmo de Dijkstra
+    grafo = Graph(lista_adyacencia)
+
+    # Ruta más corta
+    ruta = grafo.ruta_corta(inicio, fin)
+    time.sleep(1)
+    clear()
+
+    # Imprime la ruta
+    update_mapa(mapa, ruta)
+    print_mapa(mapa)
 
 if __name__ == "__main__":
     filas, columnas = 21, 26
     mapa = init_mapa(filas, columnas)
 
+    mostrar_ruta(mapa)
 
     # # Se crea el mapa
     # mapa = crear_mapa(filas, columnas)
@@ -288,8 +317,8 @@ if __name__ == "__main__":
     # agregar_arbol(mapa)
     # print_mapa(mapa)
 
-    # # Lista de adyacencia para Dijkstra
-    # ady_graph = get_adj_dic(mapa)
+    # Lista de adyacencia para Dijkstra
+    # ady_graph = crear_adyacencia_de_mapa(mapa)
 
     # # Instancia de la clase que implementa
     # # el algoritmo dijkstra
