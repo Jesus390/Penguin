@@ -1,5 +1,14 @@
-import random
 from heapq import heapify, heappop, heappush
+
+import random
+import os
+
+def clear():
+    if os.name == 'nt':  # For Windows
+        os.system('cls')
+    else:  # For Linux and MacOS
+        os.system('clear')
+
 
 class Graph:
     def __init__(self, graph: dict={}):
