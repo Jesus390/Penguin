@@ -245,45 +245,66 @@ def agregar_obstaculos_manual(mapa):
             mapa[fila][columna] = emojis['obstaculo'][0]
             break
 
+def init_mapa(filas, columnas):
+    '''inicializa el mapa'''
+    # crea el tablero
+    mapa = crear_mapa(filas, columnas)
+
+    # crea los caminos en el mapa
+    crear_caminos_cuadricula(mapa)
+
+    # agrega obstaculos al mapa
+    agregar_obstaculos(mapa)
+
+    # agrega arboles al mapa
+    agregar_arbol(mapa)
+
+    print_mapa(mapa)
+
+    return mapa
+
 
 if __name__ == "__main__":
     filas, columnas = 21, 26
-    # Se crea el mapa
-    mapa = crear_mapa(filas, columnas)
-    print_mapa(mapa)
-    crear_caminos_cuadricula(mapa)
-    print_mapa(mapa)
-    agregar_obstaculos(mapa)
-    print_mapa(mapa)
-    agregar_arbol(mapa)
-    print_mapa(mapa)
+    mapa = init_mapa(filas, columnas)
 
-    # Lista de adyacencia para Dijkstra
-    ady_graph = get_adj_dic(mapa)
 
-    # Instancia de la clase que implementa
-    # el algoritmo dijkstra
-    dijkstra = Graph(ady_graph)
+    # # Se crea el mapa
+    # mapa = crear_mapa(filas, columnas)
+    # print_mapa(mapa)
+    # crear_caminos_cuadricula(mapa)
+    # print_mapa(mapa)
+    # agregar_obstaculos(mapa)
+    # print_mapa(mapa)
+    # agregar_arbol(mapa)
+    # print_mapa(mapa)
 
-    # Coordenadas estaticas
-    # # inicio = (0, 0)
-    # # final = (20, 21)
+    # # Lista de adyacencia para Dijkstra
+    # ady_graph = get_adj_dic(mapa)
 
-    # Ingreso manual de coordenadas
-    inicio = inicio(mapa)
-    final = final(mapa)
-    # print(dijkstra.graph)
+    # # Instancia de la clase que implementa
+    # # el algoritmo dijkstra
+    # dijkstra = Graph(ady_graph)
 
-    print_mapa(mapa)
+    # # Coordenadas estaticas
+    # # # inicio = (0, 0)
+    # # # final = (20, 21)
 
-    # Obtenemos la ruta mas corta
-    shortet_path = dijkstra.ruta_corta(inicio, final)
+    # # Ingreso manual de coordenadas
+    # inicio = inicio(mapa)
+    # final = final(mapa)
+    # # print(dijkstra.graph)
 
-    # Se actualiza el mapa
-    update_mapa(mapa, shortet_path)
-    print_mapa(mapa)
+    # print_mapa(mapa)
 
-    # Agregamos obstaculos de forma manual
-    agregar_obstaculos_manual(mapa)
-    update_mapa(mapa, shortet_path)
-    print_mapa(mapa)
+    # # Obtenemos la ruta mas corta
+    # shortet_path = dijkstra.ruta_corta(inicio, final)
+
+    # # Se actualiza el mapa
+    # update_mapa(mapa, shortet_path)
+    # print_mapa(mapa)
+
+    # # Agregamos obstaculos de forma manual
+    # agregar_obstaculos_manual(mapa)
+    # update_mapa(mapa, shortet_path)
+    # print_mapa(mapa)
