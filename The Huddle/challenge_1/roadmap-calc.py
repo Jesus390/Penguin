@@ -141,7 +141,7 @@ def get_caminos(mapa):
     cantidad = 0
     for i in range(len(mapa)):
         for j in range(len(mapa[i])):
-            if mapa[i][j] == camino_principal:
+            if mapa[i][j] == camino_principal or mapa[i][j] == emoji_inicio or mapa[i][j] == emoji_final:
                 caminos_disponibles.append((i, j))
                 cantidad += 1
     return caminos_disponibles, cantidad
@@ -274,9 +274,6 @@ def init_mapa(filas, columnas):
     return mapa
 
 def mostrar_ruta(mapa):
-    # Lista de adyacencia
-    lista_adyacencia = crear_adyacencia_de_mapa(mapa)
-
     # Punto inicial
     inicio = marcar_punto_inicial(mapa)
     clear()
@@ -288,6 +285,9 @@ def mostrar_ruta(mapa):
     print_mapa(mapa)
 
     print("Procesando camino ...")
+
+    # Lista de adyacencia
+    lista_adyacencia = crear_adyacencia_de_mapa(mapa)
 
     # Instancia de la clase Graph, para el algoritmo de Dijkstra
     grafo = Graph(lista_adyacencia)
@@ -301,11 +301,74 @@ def mostrar_ruta(mapa):
     update_mapa(mapa, ruta)
     print_mapa(mapa)
 
+def obtener_posicion_emoji(mapa, emoji):
+    for i in range(len(mapa)):
+        for j in range(len(mapa[i])):
+            if mapa[i][j] == emoji:
+                return (i, j)
+
+def limpiar_ruta(mapa):
+    for i in range(len(mapa)):
+        for j in range(len(mapa[i])):
+            if mapa[i][j] == camino_corto:
+                mapa[i][j] = camino_principal
+
+def actualizar_mostrar_ruta(mapa):
+    caminos_disponibles = get_caminos(mapa)
+    index_inicio = obtener_posicion_emoji(mapa, emoji_inicio)
+    index_fin = obtener_posicion_emoji(mapa, emoji_final)
+
+    print("Procesando nuevo camino...")
+    time.sleep(1)
+    clear()
+    
+    # Lista de adyacencia
+    lista_adyacencia = crear_adyacencia_de_mapa(mapa)
+
+    # Instancia de la clase Graph, para el algoritmo de Dijkstra
+    grafo = Graph(lista_adyacencia)
+
+    # Ruta más corta
+    ruta = grafo.ruta_corta(index_inicio, index_fin)
+    time.sleep(1)
+    clear()
+
+    # Imprime la ruta
+    update_mapa(mapa, ruta)
+    print_mapa(mapa)
+
+
+
+def cambiar_punto_inicial(mapa):
+    # Punto inicial
+    index_fila, index_columna = obtener_posicion_emoji(mapa, emoji_inicio)
+    while True:
+        fila = int(input("Ingrese nuevo punto inicial(fila): "))
+        columna = int(input("Ingrese nuevo punto inicial(columna): "))
+
+        if (fila, columna) == (index_fila, index_columna):
+            print(f"Nuevo punto no valido {fila, columna}.")
+            print("Misma posición seleccionada, por favor vuelva a ingresar...")
+            continue
+        
+        clear()
+        mapa[index_fila][index_columna] = camino_principal
+        mapa[fila][columna] = emoji_inicio
+        limpiar_ruta(mapa)
+        actualizar_mostrar_ruta(mapa)
+        break
+
 if __name__ == "__main__":
     filas, columnas = 21, 26
     mapa = init_mapa(filas, columnas)
 
+    # Muestra la ruta mas corta desde el punto inicial
+    # al punto final
     mostrar_ruta(mapa)
+
+    # Cambia el punto inicial
+    cambiar_punto_inicial(mapa)
+    # print_mapa(mapa)
 
     # # Se crea el mapa
     # mapa = crear_mapa(filas, columnas)
