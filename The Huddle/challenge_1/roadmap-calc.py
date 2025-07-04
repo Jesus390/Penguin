@@ -358,6 +358,26 @@ def cambiar_punto_inicial(mapa):
         actualizar_mostrar_ruta(mapa)
         break
 
+
+def cambiar_punto_final(mapa):
+    # Punto final
+    index_fila, index_columna = obtener_posicion_emoji(mapa, emoji_final)
+    while True:
+        fila = int(input("Ingrese nuevo punto final(fila): "))
+        columna = int(input("Ingrese nuevo punto final(columna): "))
+
+        if (fila, columna) == (index_fila, index_columna):
+            print(f"Nuevo punto no valido {fila, columna}.")
+            print("Misma posición seleccionada, por favor vuelva a ingresar...")
+            continue
+        
+        clear()
+        mapa[index_fila][index_columna] = camino_principal
+        mapa[fila][columna] = emoji_final
+        limpiar_ruta(mapa)
+        actualizar_mostrar_ruta(mapa)
+        break
+
 if __name__ == "__main__":
     filas, columnas = 21, 26
     mapa = init_mapa(filas, columnas)
@@ -368,7 +388,9 @@ if __name__ == "__main__":
 
     # Cambia el punto inicial
     cambiar_punto_inicial(mapa)
-    # print_mapa(mapa)
+    
+    # Cambia el punto final
+    cambiar_punto_final(mapa)
 
     # # Se crea el mapa
     # mapa = crear_mapa(filas, columnas)
