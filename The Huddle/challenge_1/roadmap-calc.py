@@ -386,11 +386,30 @@ if __name__ == "__main__":
     # al punto final
     mostrar_ruta(mapa)
 
+    while True:
+        print(
+            '''
++ Seleccione una opción:
+1. Cambiar punto inicial
+2. Cambiar punto final
+0. Salir
+'''
+        )
+        opcion = input("Ingrese opción: ")
+        if opcion == "0":
+            break
+        elif opcion == "1":
+            cambiar_punto_inicial(mapa)
+        elif opcion == "2":
+            cambiar_punto_final(mapa)
+        else:
+            print("Opción no válida. Por favor, vuelva a intentarlo.")
+
     # Cambia el punto inicial
-    cambiar_punto_inicial(mapa)
+    # cambiar_punto_inicial(mapa)
     
     # Cambia el punto final
-    cambiar_punto_final(mapa)
+    # cambiar_punto_final(mapa)
 
     # # Se crea el mapa
     # mapa = crear_mapa(filas, columnas)
