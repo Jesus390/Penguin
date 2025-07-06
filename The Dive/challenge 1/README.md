@@ -1,6 +1,4 @@
-# tomyjerry
-
-## Aprendido...
+# The Dive - Challenge 1
 
 ### Utilizar git pull y push
 - pull: actualiza el branch local desde el repositorio remoto
