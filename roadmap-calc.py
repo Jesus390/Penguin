@@ -1,15 +1,5 @@
-from heapq import heapify, heappop, heappush
-
 import random
-import os
-import time
-
-def clear():
-    if os.name == 'nt':  # For Windows
-        os.system('cls')
-    else:  # For Linux and MacOS
-        os.system('clear')
-
+from heapq import heapify, heappop, heappush
 
 class Graph:
     def __init__(self, graph: dict={}):
@@ -141,7 +131,7 @@ def get_caminos(mapa):
     cantidad = 0
     for i in range(len(mapa)):
         for j in range(len(mapa[i])):
-            if mapa[i][j] == camino_principal or mapa[i][j] == camino_corto or mapa[i][j] == emoji_inicio or mapa[i][j] == emoji_final:
+            if mapa[i][j] == camino_principal:
                 caminos_disponibles.append((i, j))
                 cantidad += 1
     return caminos_disponibles, cantidad
@@ -166,7 +156,7 @@ def agregar_arbol(mapa):
                 mapa[i-1][j] == emojis['casa'][0]:
                     mapa[i][j] = random.choice(emojis['arbol'])
 
-def marcar_punto_inicial(mapa):
+def inicio(mapa):
     '''agrega el punto de inicio al mapa'''
     while True:
         fila = int(input("Ingresa la fila donde deseas empezar: "))
@@ -179,7 +169,7 @@ def marcar_punto_inicial(mapa):
         print("Posicion no disponible.")
     return (fila, columna)
 
-def marcar_punto_final(mapa):
+def final(mapa):
     '''agrega el punto de fin al mapa'''
     while True:
         fila = int(input("Ingresa la fila donde deseas finalizar: "))
@@ -201,7 +191,7 @@ def get_nodo_del_nodo_actual(nodo_actual, caminos):
             nodos_adyacentes[nodo_siguiente] = 1
     return nodos_adyacentes
 
-def crear_adyacencia_de_mapa(mapa):
+def get_adj_dic(mapa):
     caminos_disponibles = get_caminos(mapa)
     graph = {}
     for camino in caminos_disponibles[0]:
@@ -255,189 +245,45 @@ def agregar_obstaculos_manual(mapa):
             mapa[fila][columna] = emojis['obstaculo'][0]
             break
 
-def init_mapa(filas, columnas):
-    '''inicializa el mapa'''
-    # crea el tablero
-    mapa = crear_mapa(filas, columnas)
-
-    # crea los caminos en el mapa
-    crear_caminos_cuadricula(mapa)
-
-    # agrega obstaculos al mapa
-    agregar_obstaculos(mapa)
-
-    # agrega arboles al mapa
-    agregar_arbol(mapa)
-
-    print_mapa(mapa)
-
-    return mapa
-
-def mostrar_ruta(mapa):
-    # Punto inicial
-    inicio = marcar_punto_inicial(mapa)
-    clear()
-    print_mapa(mapa)
-
-    # Punto final
-    fin = marcar_punto_final(mapa)
-    clear()
-    print_mapa(mapa)
-
-    print("Procesando camino ...")
-
-    # Lista de adyacencia
-    lista_adyacencia = crear_adyacencia_de_mapa(mapa)
-
-    # Instancia de la clase Graph, para el algoritmo de Dijkstra
-    grafo = Graph(lista_adyacencia)
-
-    # Ruta más corta
-    ruta = grafo.ruta_corta(inicio, fin)
-    time.sleep(1)
-    clear()
-
-    # Imprime la ruta
-    update_mapa(mapa, ruta)
-    print_mapa(mapa)
-
-def obtener_posicion_emoji(mapa, emoji):
-    for i in range(len(mapa)):
-        for j in range(len(mapa[i])):
-            if mapa[i][j] == emoji:
-                return (i, j)
-
-def limpiar_ruta(mapa):
-    for i in range(len(mapa)):
-        for j in range(len(mapa[i])):
-            if mapa[i][j] == camino_corto:
-                mapa[i][j] = camino_principal
-
-def actualizar_mostrar_ruta(mapa):
-    index_inicio = obtener_posicion_emoji(mapa, emoji_inicio)
-    index_fin = obtener_posicion_emoji(mapa, emoji_final)
-
-    print("Procesando nuevo camino...")
-    time.sleep(1)
-    
-    # Lista de adyacencia
-    lista_adyacencia = crear_adyacencia_de_mapa(mapa)
-
-    # Instancia de la clase Graph, para el algoritmo de Dijkstra
-    grafo = Graph(lista_adyacencia)
-
-    # Ruta más corta
-    ruta = grafo.ruta_corta(index_inicio, index_fin)
-    time.sleep(1)
-    clear()
-
-    # Imprime la ruta
-    update_mapa(mapa, ruta)
-    print_mapa(mapa)
-
-
-
-def cambiar_punto_inicial(mapa):
-    # Punto inicial
-    index_fila, index_columna = obtener_posicion_emoji(mapa, emoji_inicio)
-    while True:
-        fila = int(input("Ingrese nuevo punto inicial(fila): "))
-        columna = int(input("Ingrese nuevo punto inicial(columna): "))
-
-        if (fila, columna) == (index_fila, index_columna):
-            print(f"Nuevo punto no valido {fila, columna}.")
-            print("Misma posición seleccionada, por favor vuelva a ingresar...")
-            continue
-        
-        clear()
-        mapa[index_fila][index_columna] = camino_principal
-        mapa[fila][columna] = emoji_inicio
-        limpiar_ruta(mapa)
-        actualizar_mostrar_ruta(mapa)
-        break
-
-
-def cambiar_punto_final(mapa):
-    # Punto final
-    index_fila, index_columna = obtener_posicion_emoji(mapa, emoji_final)
-    while True:
-        fila = int(input("Ingrese nuevo punto final(fila): "))
-        columna = int(input("Ingrese nuevo punto final(columna): "))
-
-        if (fila, columna) == (index_fila, index_columna):
-            print(f"Nuevo punto no valido {fila, columna}.")
-            print("Misma posición seleccionada, por favor vuelva a ingresar...")
-            continue
-        
-        clear()
-        mapa[index_fila][index_columna] = camino_principal
-        mapa[fila][columna] = emoji_final
-        limpiar_ruta(mapa)
-        actualizar_mostrar_ruta(mapa)
-        break
-
-def agregar_obstaculo_random(mapa):
-    # Agregar obstaculos random
-    caminos_diponibles = get_caminos(mapa)
-    # r = random.choices(caminos_diponibles[0])
-    # print(r)
-    fila, columna = random.choices(caminos_diponibles[0])[0]
-    mapa[fila][columna] = random.choice(emojis['obstaculo'])
-
-    clear()
-    print("Se agrego un obstaculo random en la posicion: ", fila, columna)
-    print_mapa(mapa)
-
-    actualizar_mostrar_ruta(mapa)
-    
-
-def agregar_obstaculo(mapa):
-    # Agregar obstaculos
-    caminos_disponibles = get_caminos(mapa)
-    while True:
-        fila = int(input("Ingrese fila para agregar obstaculo: "))
-        columna = int(input("Ingrese columna para agregar obstaculo: "))
-        if (fila, columna) in caminos_disponibles[0]:
-            mapa[fila][columna] = random.choice(emojis['obstaculo'])
-            clear()
-            print("Se agrego un obstaculo en la posicion: ", fila, columna)
-            limpiar_ruta(mapa)
-            print_mapa(mapa)
-            actualizar_mostrar_ruta(mapa)
-            break
-        print("Posicion no valida, por favor vuelva a ingresar...")
-    
 
 if __name__ == "__main__":
     filas, columnas = 21, 26
-    mapa = init_mapa(filas, columnas)
+    # Se crea el mapa
+    mapa = crear_mapa(filas, columnas)
+    print_mapa(mapa)
+    crear_caminos_cuadricula(mapa)
+    print_mapa(mapa)
+    agregar_obstaculos(mapa)
+    print_mapa(mapa)
+    agregar_arbol(mapa)
+    print_mapa(mapa)
 
-    # Muestra la ruta mas corta desde el punto inicial
-    # al punto final
-    mostrar_ruta(mapa)
+    # Lista de adyacencia para Dijkstra
+    ady_graph = get_adj_dic(mapa)
 
-    while True:
-        print(
-            '''
-+ Seleccione una opción:
-\t1. Cambiar punto inicial
-\t2. Cambiar punto final
-\t3. Agregar obstaculo random
-\t4. Agregar obstaculo manual
-=====================================
-0. Salir
-'''
-        )
-        opcion = input("Ingrese opción: ")
-        if opcion == "0":
-            break
-        elif opcion == "1":
-            cambiar_punto_inicial(mapa)
-        elif opcion == "2":
-            cambiar_punto_final(mapa)
-        elif opcion == "3":
-            agregar_obstaculo_random(mapa)
-        elif opcion == "4":
-            agregar_obstaculo(mapa)
-        else:
-            print("Opción no válida. Por favor, vuelva a intentarlo.")
+    # Instancia de la clase que implementa
+    # el algoritmo dijkstra
+    dijkstra = Graph(ady_graph)
+
+    # Coordenadas estaticas
+    # # inicio = (0, 0)
+    # # final = (20, 21)
+
+    # Ingreso manual de coordenadas
+    inicio = inicio(mapa)
+    final = final(mapa)
+    # print(dijkstra.graph)
+
+    print_mapa(mapa)
+
+    # Obtenemos la ruta mas corta
+    shortet_path = dijkstra.ruta_corta(inicio, final)
+
+    # Se actualiza el mapa
+    update_mapa(mapa, shortet_path)
+    print_mapa(mapa)
+
+    # Agregamos obstaculos de forma manual
+    agregar_obstaculos_manual(mapa)
+    update_mapa(mapa, shortet_path)
+    print_mapa(mapa)
