@@ -1,4 +1,4 @@
-class CreadorDeMapa():
+class Mapa():
     def __init__(self, filas, columnas):
         self.filas = filas
         self.columnas = columnas
@@ -9,8 +9,3 @@ class Entidades:
     def __init__(self, fila, columna):
         self.fila = fila
         self.columna = columna
-
-
-if __name__=="__main__":
-    creador_mapa = CreadorDeMapa(5, 5)
-    print(creador_mapa.mapa)
