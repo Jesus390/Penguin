@@ -62,18 +62,8 @@ class Graph:
 emojis = {
     "casa" : ['🏠'],
     "camino": {
-        "derecha": ['➡'],
-        "izquierda": ['⬅'],
-        "adelante": ['⬆'],
-        "atras": ['⬇'],
         "cuadrado_blanco": "⬜",
         "cuadrado_negro": "⬛",
-        "triangulo_arriba": "▲",
-        "triangulo_abajo": "▼",
-        "triangulo_derecha": "▶",
-        "triangulo_izquierda": "◀",
-        "circulo": "⭕",
-        "ruta": "🏁",
     },
     "arbol": ['🌳', '🌴', '🌻'],
     "obstaculo": ['🚧', '🪨 ', '💧'],
