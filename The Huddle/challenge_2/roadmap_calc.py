@@ -5,7 +5,7 @@ class Mapa():
     def __init__(self, filas:tuple, columnas:tuple, *, inicio:tuple=None, fin:tuple=None):
         self.filas = filas
         self.columnas = columnas
-        self.mapa = [['.' for _ in range(columnas)] for _ in range(filas)]
+        self.mapa = [['⬜' for _ in range(columnas)] for _ in range(filas)]
         self.obstaculos = []
         self.inicio = None
         self.fin = None
@@ -14,7 +14,7 @@ class Mapa():
         fila, columna = posicion
         if self.posicion_dentro((fila, columna)) and self.es_celda_accesible((fila, columna)):
             self.mapa[fila][columna] = obstaculo
-
+ 
     def quitar_obstaculo(self, posicion:tuple):
         fila, columna = posicion
         self.mapa[fila][columna] = '.'
@@ -34,7 +34,34 @@ class Mapa():
         return 0 > fila <= self.filas and 0 < columna <= self.columnas
 
     def graph(self):
-        return
+        # obtener los nodos del camino
+        nodos = []
+        for f, filas in enumerate(self.mapa):
+            for c, columna in enumerate(filas):
+                if columna == '⬜':
+                    nodos.append((f, c))
+
+        # movimientos posibles
+        # abajo     =>  ( 1, 0)
+        # arriba    =>  (-1, 0)
+        # derecha   =>  ( 0, 1)
+        # izquierda =>  ( 0,-1)
+        movimientos = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+        # obtener lista de adyacencia (diccionario)
+        adyacencias = {}
+        adyacencia_lista_aux = {}
+        for nodo in nodos:
+            nodo_fila, nodo_columna = nodo
+            for movimiento in movimientos:
+                mov_fila, mov_columna = movimiento
+                tmp_moviento = (nodo_fila + mov_fila, nodo_columna + mov_columna)
+                # print(tmp_moviento)
+                if self.posicion_dentro(tmp_moviento):
+                    adyacencia_lista_aux[tmp_moviento] = 1
+            adyacencias[nodo] = adyacencia_lista_aux
+
+        return adyacencias
 
 ######################################################################
 
