@@ -2,9 +2,10 @@ from abc import ABC, abstractmethod
 from heapq import heapify, heappop, heappush
 
 import os
+import time
 
 class Mapa():
-    def __init__(self, filas:tuple, columnas:tuple, *, inicio:tuple=None, fin:tuple=None):
+    def __init__(self, filas:int, columnas:int, *, inicio:tuple=None, fin:tuple=None):
         self.filas = filas
         self.columnas = columnas
         self.mapa = [['⬜' for _ in range(columnas)] for _ in range(filas)]
@@ -20,6 +21,25 @@ class Mapa():
     def quitar_obstaculo(self, posicion:tuple):
         fila, columna = posicion
         self.mapa[fila][columna] = '.'
+
+    def agregar_inicio(self, posicion:tuple):
+        print(f"self.filas {self.filas}, self.columnas {self.columnas}")
+        if self.posicion_dentro(posicion):
+            self.inicio = posicion
+            fila, columna = self.inicio
+            self.mapa[fila][columna] = '🟢'
+            print(f"Posicion inicial agregada en {self.inicio}")
+        else:
+            print("Posicion fuera del mapa")
+    
+    def agregar_fin(self, posicion:tuple):
+        if self.posicion_dentro(posicion):
+            self.fin = posicion
+            fila, columna = self.fin
+            self.mapa[fila][columna] = '🔴'
+            print(f"Posicion final agregada en {self.fin}")
+        else:
+            print("Posicion fuera del mapa")
 
     def agregar_casas_random(self, factor_de_cantidad:float=.3):
         import random
@@ -40,7 +60,7 @@ class Mapa():
 
     def posicion_dentro(self, posicion:tuple):
         fila, columna = posicion
-        return 0 > fila <= self.filas and 0 < columna <= self.columnas
+        return 0 <= fila < self.filas and 0 <= columna < self.columnas
     
     ########################################################
     #
@@ -173,6 +193,9 @@ class ClienteCli(ICliente):
         else:
             os.system('clear')
 
+    def esperar(self, duracion):
+        time.sleep(duracion)
+
     def mostrar_menu_principal(self):
         print("=" * 20)
         print("|\tMenu\t   |")
@@ -197,11 +220,28 @@ class ClienteCli(ICliente):
                 print(f"Opción ingresada incorrecta: {opcion}")
 
     def run(self):
+        cli = ClienteCli()
 
         filas = int(input("Filas: "))
         columnas = int(input("Columnas: "))
 
         mapa = Mapa(filas, columnas)
+        mapa.mostrar()
+
+        # agregar el punto inicial        
+        fila_inicio = int(input("Fila punto inicial: "))
+        columna_inicio = int(input("Columna punto inicial: "))
+        mapa.agregar_inicio((fila_inicio, columna_inicio))
+        cli.esperar(2)
+        cli.clear()
+        mapa.mostrar()
+
+        # agregar el punto final
+        fila_final = int(input("Fila punto final: "))
+        columna_final = int(input("Columna punto final: "))
+        mapa.agregar_fin((fila_final, columna_final))
+        cli.esperar(2)
+        cli.clear()
         mapa.mostrar()
 
         opcion = self.seleccionar_opcion_menu()
