@@ -155,11 +155,27 @@ class SistemaDeRutas:
 
 #######################################################################
 
-class Cliente():
-    def cli(self):
-        '''Muestra la interfaz gráfica en en linea de comando (CLI)'''
+class ICliente(ABC):
+    @abstractmethod
+    def run(self):
         pass
 
-    def tkinter(self):
-        '''Muestra la interfaz gráfica en pantalla utilizando la librería Tkinter'''
+class ClienteCli(ICliente):
+    '''Muestra la interfaz gráfica en en linea de comando (CLI)'''
+
+    opciones_menu_principal = ['Agregar Obstaculos', 'Quitar Obstaculos', 'Cambiar Punto Inicial', 'Cambiar Punto Final']
+
+    def mostrar_menu_principal(self):
+        print("=" * 20)
+        print("|\tMenu\t   |")
+        print("=" * 20)
+        for i, opcion in enumerate(self.opciones_menu_principal):
+            print(f"{i}- {opcion}")
+
+    def run(self):
+        pass
+
+class ClienteTkinter(ICliente):
+    '''Muestra la interfaz gráfica en pantalla utilizando la librería Tkinter'''
+    def run(self):
         pass
