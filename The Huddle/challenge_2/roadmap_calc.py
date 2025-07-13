@@ -19,6 +19,13 @@ class Mapa():
         fila, columna = posicion
         self.mapa[fila][columna] = '.'
 
+    def agregar_casas_random(self, factor_de_cantidad:float=.3):
+        import random
+        cantidad = self.filas * factor_de_cantidad
+        for fila in range(self.filas):
+            for _ in range(int(cantidad)):
+                self.mapa[fila][random.randint(0, self.columnas-1)] = '🏠'
+
     def es_celda_accesible(self, posicion:tuple):
         fila, columna = posicion
         if self.posicion_dentro((fila, columna)):
