@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from heapq import heapify, heappop, heappush
 
+import os
+
 class Mapa():
     def __init__(self, filas:tuple, columnas:tuple, *, inicio:tuple=None, fin:tuple=None):
         self.filas = filas
@@ -163,17 +165,49 @@ class ICliente(ABC):
 class ClienteCli(ICliente):
     '''Muestra la interfaz gráfica en en linea de comando (CLI)'''
 
-    opciones_menu_principal = ['Agregar Obstaculos', 'Quitar Obstaculos', 'Cambiar Punto Inicial', 'Cambiar Punto Final']
+    opciones_menu_principal = ['Salir', 'Agregar Obstaculos', 'Quitar Obstaculos', 'Cambiar Punto Inicial', 'Cambiar Punto Final']
+
+    def clear(self):
+        if os.name == 'nt':
+            os.system('cls')
+        else:
+            os.system('clear')
 
     def mostrar_menu_principal(self):
         print("=" * 20)
         print("|\tMenu\t   |")
         print("=" * 20)
         for i, opcion in enumerate(self.opciones_menu_principal):
+            if i == 0: continue
             print(f"{i}- {opcion}")
+        print("-" * 30)
+        print(f"0- {self.opciones_menu_principal[0]}\n\n")
+        
+    def seleccionar_opcion_menu(self):
+        opcion = None
+        while True:
+            self.mostrar_menu_principal()
+            try:
+                opciones = list(range(len(self.opciones_menu_principal)))
+                opcion = int(input("Selecciones una opción: "))
+                if opcion in opciones:
+                    return opcion
+                print(f"Item número incorrecto: {opcion}")
+            except Exception:
+                print(f"Opción ingresada incorrecta: {opcion}")
 
     def run(self):
-        pass
+
+        filas = int(input("Filas: "))
+        columnas = int(input("Columnas: "))
+
+        mapa = Mapa(filas, columnas)
+        mapa.mostrar()
+
+        opcion = self.seleccionar_opcion_menu()
+        if opcion == 0:
+            print("Saliendo del programa...")
+            return
 
 class ClienteTkinter(ICliente):
     '''Muestra la interfaz gráfica en pantalla utilizando la librería Tkinter'''
