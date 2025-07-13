@@ -148,3 +148,13 @@ class SistemaDeRutas:
     def ejecutar(self):
         self.calculadora.calcular()
 
+#######################################################################
+
+class Cliente():
+    def cli(self):
+        '''Muestra la interfaz gráfica en en linea de comando (CLI)'''
+        pass
+
+    def tkinter(self):
+        '''Muestra la interfaz gráfica en pantalla utilizando la librería Tkinter'''
+        pass
