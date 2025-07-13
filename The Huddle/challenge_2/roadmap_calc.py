@@ -10,7 +10,7 @@ class Mapa():
         self.inicio = None
         self.fin = None
 
-    def agregar_obstaculo(self, posicion, obstaculo:str="X"):
+    def agregar_obstaculo(self, posicion:tuple, obstaculo:str="X"):
         fila, columna = posicion
         if self.posicion_dentro((fila, columna)) and self.es_celda_accesible((fila, columna)):
             self.mapa[fila][columna] = obstaculo
@@ -36,11 +36,17 @@ class Mapa():
             print(''.join(columnas))
         print()
 
-    def posicion_dentro(self, posicion):
+    def posicion_dentro(self, posicion:tuple):
         fila, columna = posicion
         return 0 > fila <= self.filas and 0 < columna <= self.columnas
+    
+    ########################################################
+    #
+    #   Funciones auxiliares para algoritmos de busqueda
+    #
+    ########################################################
 
-    def graph(self):
+    def diccionario_de_adyacencia(self):
         # obtener los nodos del camino
         nodos = []
         for f, filas in enumerate(self.mapa):
@@ -63,7 +69,6 @@ class Mapa():
             for movimiento in movimientos:
                 mov_fila, mov_columna = movimiento
                 tmp_moviento = (nodo_fila + mov_fila, nodo_columna + mov_columna)
-                # print(tmp_moviento)
                 if self.posicion_dentro(tmp_moviento):
                     adyacencia_lista_aux[tmp_moviento] = 1
             adyacencias[nodo] = adyacencia_lista_aux
@@ -79,10 +84,10 @@ class ICalculadoraDeRutas(ABC):
 
 class Dijkstra(ICalculadoraDeRutas):
     def __init__(self, mapa:Mapa):
-        self.graph = mapa.graph()
+        self.diccionario_de_adyacencia = mapa.diccionario_de_adyacencia()
 
-    def distancias_cortas(self, source):
-        distancias = {node: float("inf") for node in self.graph}
+    def distancias_cortas(self, source:tuple):
+        distancias = {node: float("inf") for node in self.diccionario_de_adyacencia}
         distancias[source] = 0 # se inicializa la fuente en cero
         
         nodos_visitados = set()
@@ -98,21 +103,21 @@ class Dijkstra(ICalculadoraDeRutas):
 
             nodos_visitados.add(nodo_actual)
 
-            for nodo_vecino, distancia_nodo_vecino in self.graph[nodo_actual].items():
+            for nodo_vecino, distancia_nodo_vecino in self.diccionario_de_adyacencia[nodo_actual].items():
                 distancia_aux = distancia_actual + distancia_nodo_vecino
                 if distancia_aux < distancias[nodo_vecino]:
                     distancias[nodo_vecino] = distancia_aux
                     heappush(pq, (distancia_aux, nodo_vecino))
 
-        predecesores = {node: None for node in self.graph}
+        predecesores = {node: None for node in self.diccionario_de_adyacencia}
         for node, distancia in distancias.items():
-            for vecino, distancia_vecino in self.graph[node].items():
+            for vecino, distancia_vecino in self.diccionario_de_adyacencia[node].items():
                 if distancias[vecino] == distancia + distancia_vecino:
                     predecesores[vecino] = node
 
         return distancias, predecesores
     
-    def ruta_corta(self, source, target):
+    def ruta_corta(self, source:tuple, target:tuple):
         _, predecesores = self.distancias_cortas(source)
 
         ruta = []
@@ -126,7 +131,7 @@ class Dijkstra(ICalculadoraDeRutas):
         return ruta
 
     def calcular(self):
-        self.ruta_corta()    
+        self.ruta_corta(self.mapa.inicio, self.mapa.fin)    
 
 ######################################################################
 
