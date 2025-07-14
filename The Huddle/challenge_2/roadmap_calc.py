@@ -13,14 +13,17 @@ class Mapa():
         self.inicio = None
         self.fin = None
 
-    def agregar_obstaculo(self, posicion:tuple, obstaculo:str="X"):
+    def agregar_obstaculo(self, posicion:tuple, obstaculo:str="🚧"):
         fila, columna = posicion
-        if self.posicion_dentro((fila, columna)) and self.es_celda_accesible((fila, columna)):
+        if self.posicion_dentro((fila, columna)):
+            self.obstaculos.append((fila, columna)) 
             self.mapa[fila][columna] = obstaculo
  
     def quitar_obstaculo(self, posicion:tuple):
-        fila, columna = posicion
-        self.mapa[fila][columna] = '.'
+        if posicion in self.obstaculos:
+            fila, columna = posicion
+            self.obstaculos.remove(posicion)
+            self.mapa[fila][columna] = '⬜'
 
     def agregar_inicio(self, posicion:tuple):
         print(f"self.filas {self.filas}, self.columnas {self.columnas}")
@@ -78,7 +81,7 @@ class Mapa():
         nodos = []
         for f, filas in enumerate(self.mapa):
             for c, columna in enumerate(filas):
-                if columna == '⬜' or columna == '🟢' or columna == '🔴':
+                if columna == '⬜' or columna == '🟢' or columna == '🔴' or columna == '🟦':
                     nodos.append((f, c))
 
         # movimientos posibles
@@ -238,7 +241,7 @@ class ClienteCli(ICliente):
         fila_inicio = int(input("Fila punto inicial: "))
         columna_inicio = int(input("Columna punto inicial: "))
         mapa.agregar_inicio((fila_inicio, columna_inicio))
-        cli.esperar(2)
+        cli.esperar(1)
         cli.clear()
         mapa.mostrar()
 
@@ -246,7 +249,7 @@ class ClienteCli(ICliente):
         fila_final = int(input("Fila punto final: "))
         columna_final = int(input("Columna punto final: "))
         mapa.agregar_fin((fila_final, columna_final))
-        cli.esperar(2)
+        cli.esperar(1)
         cli.clear()
         mapa.mostrar()
 
@@ -257,10 +260,44 @@ class ClienteCli(ICliente):
         cli.clear()
         mapa.mostrar()
 
-        opcion = self.seleccionar_opcion_menu()
-        if opcion == 0:
-            print("Saliendo del programa...")
-            return
+        while True:
+            opcion = self.seleccionar_opcion_menu()
+            if opcion == 0:
+                print("Saliendo del programa...")
+                return
+            elif opcion == 1:
+                cli.clear()
+                while True:
+                    try:
+                        fila = int(input("Fila (Agregar Obstaculo): "))
+                        columna = int(input("Columna (Agregar Obstaculo): "))
+                        if mapa.posicion_dentro((fila, columna)):
+                            mapa.agregar_obstaculo((fila, columna))
+                            break
+                        else:
+                            print("Posición fuera del mapa")
+                    except ValueError:
+                        print("Error: Debe ingresar un número")
+                        cli.esperar(1)
+                        cli.clear()
+                mapa.mostrar()
+            elif opcion == 2:
+                cli.clear()
+                while True:
+                    try:
+                        fila = int(input("Fila (Quitar Obstaculo): "))
+                        columna = int(input("Columna (Quitar Obstaculo): "))
+                        if mapa.posicion_dentro((fila, columna)):
+                            mapa.quitar_obstaculo((fila, columna))
+                            break
+                        else:
+                            print("Posición fuera del mapa")
+                    except ValueError:
+                        print("Error: Debe ingresar un número")
+                        cli.esperar(1)
+                        cli.clear()
+                mapa.mostrar()
+
 
 class ClienteTkinter(ICliente):
     '''Muestra la interfaz gráfica en pantalla utilizando la librería Tkinter'''
