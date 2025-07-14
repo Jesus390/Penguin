@@ -57,6 +57,11 @@ class Mapa():
         for columnas in self.mapa:
             print(''.join(columnas))
         print()
+    
+    def marcar_ruta(self, ruta: list):
+        for fila, columna in ruta:
+            if self.mapa[fila][columna] == '⬜':
+                self.mapa[fila][columna] = '🟦'
 
     def posicion_dentro(self, posicion:tuple):
         fila, columna = posicion
@@ -73,7 +78,7 @@ class Mapa():
         nodos = []
         for f, filas in enumerate(self.mapa):
             for c, columna in enumerate(filas):
-                if columna == '⬜':
+                if columna == '⬜' or columna == '🟢' or columna == '🔴':
                     nodos.append((f, c))
 
         # movimientos posibles
@@ -85,8 +90,8 @@ class Mapa():
 
         # obtener lista de adyacencia (diccionario)
         adyacencias = {}
-        adyacencia_lista_aux = {}
         for nodo in nodos:
+            adyacencia_lista_aux = {}
             nodo_fila, nodo_columna = nodo
             for movimiento in movimientos:
                 mov_fila, mov_columna = movimiento
@@ -106,6 +111,7 @@ class ICalculadoraDeRutas(ABC):
 
 class Dijkstra(ICalculadoraDeRutas):
     def __init__(self, mapa:Mapa):
+        self.mapa = mapa
         self.diccionario_de_adyacencia = mapa.diccionario_de_adyacencia()
 
     def distancias_cortas(self, source:tuple):
@@ -153,27 +159,27 @@ class Dijkstra(ICalculadoraDeRutas):
         return ruta
 
     def calcular(self):
-        self.ruta_corta(self.mapa.inicio, self.mapa.fin)    
+        return self.ruta_corta(self.mapa.inicio, self.mapa.fin)    
 
 ######################################################################
 
 class CalculadoraDeRutasFactory(ABC):
     @abstractmethod
-    def crear_calculadora_de_rutas(self):
+    def crear_calculadora_de_rutas(self, mapa: Mapa):
         pass
 
 class DijkstraFactory(CalculadoraDeRutasFactory):
-    def crear_calculadora_de_rutas(self):
-        return Dijkstra()
+    def crear_calculadora_de_rutas(self, mapa: Mapa):
+        return Dijkstra(mapa)
 
 #######################################################################
 
 class SistemaDeRutas:
-    def __init__(self, factory: CalculadoraDeRutasFactory):
-        self.calculadora = factory.crear_calculadora_de_rutas()
+    def __init__(self, factory: CalculadoraDeRutasFactory, mapa: Mapa):
+        self.calculadora = factory.crear_calculadora_de_rutas(mapa)
 
     def ejecutar(self):
-        self.calculadora.calcular()
+        return self.calculadora.calcular()
 
 #######################################################################
 
@@ -241,6 +247,13 @@ class ClienteCli(ICliente):
         columna_final = int(input("Columna punto final: "))
         mapa.agregar_fin((fila_final, columna_final))
         cli.esperar(2)
+        cli.clear()
+        mapa.mostrar()
+
+        factory = DijkstraFactory()
+        sistema = SistemaDeRutas(factory, mapa)
+        ruta_corta = sistema.ejecutar()
+        mapa.marcar_ruta(ruta_corta)
         cli.clear()
         mapa.mostrar()
 
