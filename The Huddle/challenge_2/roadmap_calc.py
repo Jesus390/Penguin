@@ -99,7 +99,7 @@ class Mapa():
             for movimiento in movimientos:
                 mov_fila, mov_columna = movimiento
                 tmp_moviento = (nodo_fila + mov_fila, nodo_columna + mov_columna)
-                if self.posicion_dentro(tmp_moviento):
+                if self.posicion_dentro(tmp_moviento) and tmp_moviento in nodos:
                     adyacencia_lista_aux[tmp_moviento] = 1
             adyacencias[nodo] = adyacencia_lista_aux
 
@@ -204,6 +204,21 @@ class ClienteCli(ICliente):
 
     def esperar(self, duracion):
         time.sleep(duracion)
+    
+    def limpiar_ruta_corta(self, mapa):
+        for i in range(mapa.filas):
+            for j in range(mapa.columnas):
+                if mapa.mapa[i][j] == '🟦':
+                    mapa.mapa[i][j] = '⬜'
+        return mapa
+
+    def actualizar_mapa(self, mapa: Mapa, factory: CalculadoraDeRutasFactory):
+        mapa = self.limpiar_ruta_corta(mapa)
+        sistema = SistemaDeRutas(factory, mapa)
+        ruta_corta = sistema.ejecutar()
+        mapa.marcar_ruta(ruta_corta)
+        self.clear()
+        mapa.mostrar()
 
     def mostrar_menu_principal(self):
         print("=" * 20)
@@ -253,12 +268,14 @@ class ClienteCli(ICliente):
         cli.clear()
         mapa.mostrar()
 
-        factory = DijkstraFactory()
-        sistema = SistemaDeRutas(factory, mapa)
-        ruta_corta = sistema.ejecutar()
-        mapa.marcar_ruta(ruta_corta)
-        cli.clear()
-        mapa.mostrar()
+        cli.actualizar_mapa(mapa, DijkstraFactory())
+
+        # factory = DijkstraFactory()
+        # sistema = SistemaDeRutas(factory, mapa)
+        # ruta_corta = sistema.ejecutar()
+        # mapa.marcar_ruta(ruta_corta)
+        # cli.clear()
+        # mapa.mostrar()
 
         while True:
             opcion = self.seleccionar_opcion_menu()
@@ -280,7 +297,7 @@ class ClienteCli(ICliente):
                         print("Error: Debe ingresar un número")
                         cli.esperar(1)
                         cli.clear()
-                mapa.mostrar()
+                cli.actualizar_mapa(mapa, DijkstraFactory())
             elif opcion == 2:
                 cli.clear()
                 while True:
@@ -296,7 +313,7 @@ class ClienteCli(ICliente):
                         print("Error: Debe ingresar un número")
                         cli.esperar(1)
                         cli.clear()
-                mapa.mostrar()
+                cli.actualizar_mapa(mapa, DijkstraFactory())
 
 
 class ClienteTkinter(ICliente):
