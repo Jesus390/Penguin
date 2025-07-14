@@ -44,6 +44,18 @@ class Mapa():
         else:
             print("Posicion fuera del mapa")
 
+    def actualizar_punto_inicio(self, posicion:tuple):
+        if self.posicion_dentro(posicion):
+            self.mapa[self.inicio[0]][self.inicio[1]] = '⬜'
+            self.inicio = posicion
+            self.mapa[self.inicio[0]][self.inicio[1]] = '🟢'
+
+    def actualizar_punto_fin(self, posicion:tuple):
+        if self.posicion_dentro(posicion):
+            self.mapa[self.fin[0]][self.fin[1]] = '⬜'
+            self.fin = posicion
+            self.mapa[self.fin[0]][self.fin[1]] = '🔴'
+
     def agregar_casas_random(self, factor_de_cantidad:float=.3):
         import random
         cantidad = self.filas * factor_de_cantidad
@@ -249,6 +261,9 @@ class ClienteCli(ICliente):
         filas = int(input("Filas: "))
         columnas = int(input("Columnas: "))
 
+        cli.clear()
+
+        print(f"Filas: {filas}, Columnas: {columnas}")
         mapa = Mapa(filas, columnas)
         mapa.mostrar()
 
@@ -256,18 +271,21 @@ class ClienteCli(ICliente):
         fila_inicio = int(input("Fila punto inicial: "))
         columna_inicio = int(input("Columna punto inicial: "))
         mapa.agregar_inicio((fila_inicio, columna_inicio))
-        cli.esperar(1)
+        # cli.esperar(1)
         cli.clear()
+        print(f"Punto Inicial:\nFila: {fila_inicio}, Columna: {columna_inicio}")
         mapa.mostrar()
 
         # agregar el punto final
         fila_final = int(input("Fila punto final: "))
         columna_final = int(input("Columna punto final: "))
         mapa.agregar_fin((fila_final, columna_final))
-        cli.esperar(1)
+        # cli.esperar(1)
         cli.clear()
+        print(f"Punto Final:\nFila: {fila_inicio}, Columna: {columna_inicio}")
         mapa.mostrar()
 
+        cli.esperar(1)
         cli.actualizar_mapa(mapa, DijkstraFactory())
 
         # factory = DijkstraFactory()
@@ -314,6 +332,39 @@ class ClienteCli(ICliente):
                         cli.esperar(1)
                         cli.clear()
                 cli.actualizar_mapa(mapa, DijkstraFactory())
+            elif opcion == 3:
+                cli.clear()
+                while True:
+                    try:
+                        fila = int(input("Fila (Nueva posición incial): "))
+                        columna = int(input("Columna (Nueva posición inicial): "))
+                        if mapa.posicion_dentro((fila, columna)):
+                            mapa.actualizar_punto_inicio((fila, columna))
+                            break
+                        else:
+                            print("Posición fuera del mapa")
+                    except ValueError:
+                        print("Error: Debe ingresar un número")
+                        cli.esperar(1)
+                        cli.clear()
+                cli.actualizar_mapa(mapa, DijkstraFactory())
+            elif opcion == 4:
+                cli.clear()
+                while True:
+                    try:
+                        fila = int(input("Fila (Nueva posición final): "))
+                        columna = int(input("Columna (Nueva posición final): "))
+                        if mapa.posicion_dentro((fila, columna)):
+                            mapa.actualizar_punto_fin((fila, columna))
+                            break
+                        else:
+                            print("Posición fuera del mapa")
+                    except ValueError:
+                        print("Error: Debe ingresar un número")
+                        cli.esperar(1)
+                        cli.clear()
+                cli.actualizar_mapa(mapa, DijkstraFactory())
+
 
 
 class ClienteTkinter(ICliente):
