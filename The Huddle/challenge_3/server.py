@@ -13,12 +13,13 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     while True:
         try:
             conn, addr = s.accept()
+            conn.setblocking(False)
             with conn:
                 print(f"Cliente conectado: {addr}")
                 while True:
                     data = conn.recv(1024)
                     if not data:
-                        break
+                        break 
                     print(f"{addr}-{time.ctime(time.time())}: {data.decode()}")
                     conn.sendall(data)
         except ConnectionResetError:
