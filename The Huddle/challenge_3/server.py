@@ -10,19 +10,12 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     print(f"Servidor vinculado: {HOST}:{PORT}")
     s.listen()
     print("Esperando Conecciones...")
-    while True:
-        try:
-            conn, addr = s.accept()
-            conn.setblocking(False)
-            with conn:
-                print(f"Cliente conectado: {addr}")
-                while True:
-                    data = conn.recv(1024)
-                    if not data:
-                        break 
-                    print(f"{addr}-{time.ctime(time.time())}: {data.decode()}")
-                    conn.sendall(data)
-        except ConnectionResetError:
-            print(f"Conexión con {addr} cerrada")
-        except OSError as e:
-            print(f"Error de socket: {e}")
+    conn, addr = s.accept()
+    while conn:
+        print(f"Conectado a {addr}")
+        data = conn.recv(1024)
+        if not data:
+            break
+        print(f"Recebi: {data}")
+        conn.sendall(data)
+    
