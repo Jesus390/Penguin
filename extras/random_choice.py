@@ -38,10 +38,12 @@ class ReadFile():
         return nombres
 
 if __name__ == "__main__":
-    read_file = ReadFile('nombres.txt')
-    nombres_list = read_file.get_nombres()
-    
-    obj = RandomNameChoice(nombres_list, 3)
+    path = input("Ingrese el path del archivo: ")
+    nombres = ReadFile(path).get_nombres()
+    print(f"Nombres: {nombres}")
+
+    posibilidad = int(input("Ingrese la cantidad de veces que se puede elegir cada nombre: "))
+    obj = RandomNameChoice(nombres, posibilidad)
     select = Select(obj)
 
     if int(input("Seleccionar usuario... 1 si, 0 no: ")) == 1:
