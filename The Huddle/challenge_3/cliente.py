@@ -2,7 +2,7 @@
 import socket
 
 HOST = 'localhost'    # The remote host
-PORT = 65432          # The same port as used by the server
+PORT = 12345          # The same port as used by the server
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     s.settimeout(10)
     try:
