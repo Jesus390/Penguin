@@ -1,4 +1,7 @@
-jupyterlab
-colorama
-Flask
-Flask-SQLAlchemy
+beautifulsoup4==4.13.4
+colorama==0.4.6
+Flask==3.1.1
+flask_login==0.6.3
+flask_sqlalchemy==3.1.1
+websockets==15.0.1
+Werkzeug==3.1.3
