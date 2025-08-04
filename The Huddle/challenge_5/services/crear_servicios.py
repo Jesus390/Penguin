@@ -7,11 +7,14 @@ import time
 HOST = '127.0.0.1'
 PORT = 12345
 
-def crear_servicio(id_serv, data, tipo_log, cantidad=10):
+def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> None:
     '''
     @function, crear_servicio, recibe una lista de servicios y los ejecuta en segundo plano.
-    @param, servicios, lista de servicios a ejecutar en formato JSON
-    @return, lista de servicios ejecutados
+    @param, id_serv, id del servicio
+    @param, data, datos del servicio
+    @param, tipo_log, tipo de log
+    @param, cantidad, cantidad de veces que se ejecuta el servicio
+    @return, None
     '''
     name = data['name']
 
@@ -43,7 +46,7 @@ def crear_servicio(id_serv, data, tipo_log, cantidad=10):
         # decrementar la cantidad de logs a generar
         cantidad -= 1
 
-def iniciar_servicios():
+def iniciar_servicios() -> None:
     with open('config_servicios.json', 'r', encoding='utf-8') as file:
         config = json.load(file)
 
