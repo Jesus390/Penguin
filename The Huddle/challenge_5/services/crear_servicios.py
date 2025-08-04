@@ -36,7 +36,14 @@ def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> No
 
         # envio de log
         try:
-            requests.post(f'http://{HOST}:{PORT}/log', data=json.dumps(log))
+            print(f"Enviando datos del servicio {name} al servidor.")
+            response = requests.post(f'http://{HOST}:{PORT}/log', data=json.dumps(log))
+
+            if response.status_code == 200:
+                print(f'Servicio {name} ejecutado correctamente')
+                print(f"Respuesta: {response.text}")
+            else:
+                print(f'Error al ejecutar servicio {name}')
         except Exception as e:
             print(f"[{id_serv}] Error al enviar log: {e}")
 
