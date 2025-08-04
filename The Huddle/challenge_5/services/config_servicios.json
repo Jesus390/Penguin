@@ -3,16 +3,12 @@
     "service1": {
       "name": "Service 1",
       "description": "This is service 1",
-      "url": "https://service1.com",
-      "status": "active",
-      "created_at": "2022-01-01T00:00:00.000"
+      "url": "https://service1.com"
     },
     "service2": {
       "name": "Service 2",
       "description": "This is service 2",
-      "url": "https://service2.com",
-      "status": "inactive",
-      "created_at": "2022-01-02T00:00:00.000"
+      "url": "https://service2.com"
     }
   },
   "severity": {
