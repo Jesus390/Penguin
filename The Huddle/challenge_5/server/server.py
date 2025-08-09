@@ -1,5 +1,12 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
+import uvicorn
+
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+path = os.getenv('PENGUIN_PATH')
 
 
 from sqlalchemy import Column, Integer, String, create_engine
@@ -19,7 +26,7 @@ class Logs(Base):
     message = Column(String(255))
 
 
-engine = create_engine('sqlite:///libros.db')
+engine = create_engine(f'sqlite:///{path}logs.db')
 
 Base.metadata.create_all(engine)
 
@@ -42,13 +49,14 @@ class Datos(BaseModel):
     type: str
     message: str
 
-
 app = FastAPI()
-
 
 @app.post("/log/")
 async def create_item(datos: Datos):
     add_log(datos.id_service, datos.name, datos.timestamp, datos.level, datos.type, datos.message)
-    with open('log.txt', 'a+', encoding='utf-8') as log_file:
+    with open(path + 'logs.txt', 'a+', encoding='utf-8') as log_file:
         log_file.write(f"{datos.id_service} {datos.name} {datos.timestamp} {datos.level} {datos.type} {datos.message}\n")
     return {f"Id servicio: {datos.id_service}, Nombre: {datos.name}"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=12345)
