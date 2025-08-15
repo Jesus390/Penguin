@@ -7,7 +7,7 @@ import time
 HOST = '127.0.0.1'
 PORT = 12345
 
-def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> None:
+def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=3) -> None:
     '''
     @function, crear_servicio, recibe una lista de servicios y los ejecuta en segundo plano.
     @param, id_serv, id del servicio
@@ -19,6 +19,11 @@ def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> No
     name = data['name']
 
     token = requests.post(f'http://{HOST}:{PORT}/token', json={'service_id': id_serv})
+    if token.status_code == 200:
+        token = token.json()
+        print(f"Servicio: {id_serv}, Token: {token}")
+    else:
+        print(f"Error al solicitar la solicitud. Servicio: {id_serv}, Token: {token.status_code}")
                                                                                      
     cantidad = cantidad
     while cantidad:
@@ -26,7 +31,9 @@ def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> No
         type = random.choice([k for k, _ in tipo_log['Type'].items() if tipo_log['Type'][k]['level']==level])
         message = random.choice(tipo_log['Type'][type]['messages'])
 
-        headers = {'Authorization': token}
+        # headers = {'Authorization': token}
+        headers = {'Authorization': token['Authorization']}
+
 
         # formato de envio de log
         log = {
