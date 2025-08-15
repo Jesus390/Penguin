@@ -18,11 +18,15 @@ def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> No
     '''
     name = data['name']
 
+    token = requests.post(f'http://{HOST}:{PORT}/token', json={'service_id': id_serv})
+                                                                                     
     cantidad = cantidad
     while cantidad:
         level = random.choice(list(tipo_log['level'].keys()))
         type = random.choice([k for k, _ in tipo_log['Type'].items() if tipo_log['Type'][k]['level']==level])
         message = random.choice(tipo_log['Type'][type]['messages'])
+
+        headers = {'Authorization': token}
 
         # formato de envio de log
         log = {
@@ -37,7 +41,7 @@ def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> No
         # envio de log
         try:
             print(f"Enviando datos del servicio {name} al servidor.")
-            response = requests.post(f'http://{HOST}:{PORT}/log', data=json.dumps(log))
+            response = requests.post(f'http://{HOST}:{PORT}/log', headers=headers, data=json.dumps(log))
 
             if response.status_code == 200:
                 print(f'Servicio {name} ejecutado correctamente')
