@@ -1,9 +1,11 @@
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from pydantic import BaseModel
-import uvicorn
 
-from dotenv import load_dotenv
+import datetime
+import jwt
 import os
+import uvicorn
 
 load_dotenv()
 path = os.getenv('PENGUIN_PATH')
@@ -40,6 +42,12 @@ def add_log(id_service, name, timestamp, level, type, message):
     session.commit()
     session.close()
 
+def generate_token(service_id):
+    payload = {
+        'service_id': service_id,
+        'exp': datetime.datetime.now() + datetime.timedelta(minutes=30)
+        }
+    return jwt.encode(payload, 'secret_key', algorithm='HS256')
 
 class Datos(BaseModel):
     id_service: str
@@ -49,6 +57,9 @@ class Datos(BaseModel):
     type: str
     message: str
 
+class ServiceId(BaseModel):
+    service_id:str
+
 app = FastAPI()
 
 @app.post("/log/")
@@ -57,6 +68,12 @@ async def create_item(datos: Datos):
     with open(path + 'logs.txt', 'a+', encoding='utf-8') as log_file:
         log_file.write(f"{datos.id_service} {datos.name} {datos.timestamp} {datos.level} {datos.type} {datos.message}\n")
     return {f"Id servicio: {datos.id_service}, Nombre: {datos.name}"}
+
+@app.post("/token")
+def token(datos: ServiceId):
+    token = generate_token(datos.service_id)
+    print(f"Servicio: {datos.service_id}, Token: {token}")
+    return {"Authorization": token}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=12345)
