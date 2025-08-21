@@ -1,11 +1,21 @@
+from dotenv import load_dotenv
+
 import json
+import os
 import random
 import requests
 import threading
 import time
 
-HOST = '127.0.0.1'
-PORT = 12345
+
+# cargar variables de entorno del archivo .env
+load_dotenv()
+
+# ip del servidor
+HOST = os.getenv('HOST')
+
+# puerto del servidor
+PORT = os.getenv('PORT')
 
 def get_token(id_serv):
     response = requests.post(f'http://{HOST}:{PORT}/token', json={'service_id': id_serv})
@@ -17,7 +27,7 @@ def get_token(id_serv):
 
     return token
 
-def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=3) -> None:
+def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> None:
     '''
     @function, crear_servicio, recibe una lista de servicios y los ejecuta en segundo plano.
     @param, id_serv, id del servicio
@@ -27,14 +37,6 @@ def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=3) -> Non
     @return, None
     '''
     name = data['name']
-
-    # token = requests.post(f'http://{HOST}:{PORT}/token', json={'service_id': id_serv})
-    # if token.status_code == 200:
-    #     print(f"Headers: {token.headers}")
-    #     token = token.json()
-    #     print(f"Servicio: {id_serv}, Token: {token}")
-    # else:
-    #     print(f"Error al solicitar la solicitud. Servicio: {id_serv}, Token: {token.status_code}")
 
     token = get_token(id_serv)
                                                   
