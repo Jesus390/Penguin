@@ -7,6 +7,16 @@ import time
 HOST = '127.0.0.1'
 PORT = 12345
 
+def get_token(id_serv):
+    response = requests.post(f'http://{HOST}:{PORT}/token', json={'service_id': id_serv})
+    token = ''
+    if response.status_code == 200:
+        token = response.json()
+    else:
+        print(f"Error al solicitar la solicitud. Servicio: {id_serv}, Token: {response.status_code}")
+
+    return token
+
 def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=3) -> None:
     '''
     @function, crear_servicio, recibe una lista de servicios y los ejecuta en segundo plano.
@@ -18,21 +28,24 @@ def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=3) -> Non
     '''
     name = data['name']
 
-    token = requests.post(f'http://{HOST}:{PORT}/token', json={'service_id': id_serv})
-    if token.status_code == 200:
-        token = token.json()
-        print(f"Servicio: {id_serv}, Token: {token}")
-    else:
-        print(f"Error al solicitar la solicitud. Servicio: {id_serv}, Token: {token.status_code}")
-                                                                                     
+    # token = requests.post(f'http://{HOST}:{PORT}/token', json={'service_id': id_serv})
+    # if token.status_code == 200:
+    #     print(f"Headers: {token.headers}")
+    #     token = token.json()
+    #     print(f"Servicio: {id_serv}, Token: {token}")
+    # else:
+    #     print(f"Error al solicitar la solicitud. Servicio: {id_serv}, Token: {token.status_code}")
+
+    token = get_token(id_serv)
+                                                  
     cantidad = cantidad
     while cantidad:
         level = random.choice(list(tipo_log['level'].keys()))
         type = random.choice([k for k, _ in tipo_log['Type'].items() if tipo_log['Type'][k]['level']==level])
         message = random.choice(tipo_log['Type'][type]['messages'])
 
-        # headers = {'Authorization': token}
-        headers = {'Authorization': token['Authorization']}
+        # headers = {'Authorization': Bearer "token"}
+        headers = {'Content-Type': 'application/json', 'Authorization': f"Bearer {token['token']}"}
 
 
         # formato de envio de log
@@ -48,13 +61,13 @@ def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=3) -> Non
         # envio de log
         try:
             print(f"Enviando datos del servicio {name} al servidor.")
-            response = requests.post(f'http://{HOST}:{PORT}/log', headers=headers, data=json.dumps(log))
+            response = requests.post(f'http://{HOST}:{PORT}/log', headers=headers, json=log)
 
             if response.status_code == 200:
                 print(f'Servicio {name} ejecutado correctamente')
                 print(f"Respuesta: {response.text}")
             else:
-                print(f'Error al ejecutar servicio {name}')
+                print(f'Error al ejecutar servicio {name}, STATUS CODE: {response.status_code}')
         except Exception as e:
             print(f"[{id_serv}] Error al enviar log: {e}")
 
@@ -74,7 +87,7 @@ def iniciar_servicios() -> None:
     for id_servicio, data in servicios.items():
         thread = threading.Thread(target=crear_servicio, args=(id_servicio, data, tipo_log), daemon=False)
         thread.start()
+                                     
 
 if __name__=="__main__":
     iniciar_servicios()
-
