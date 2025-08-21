@@ -11,8 +11,10 @@ load_dotenv()
 path = os.getenv('PENGUIN_PATH')
 
 # clave secreta para firmar los tokens
-SECRET_KEY = "secret_key"
-ALGORITHM = "HS256"
+SECRET_KEY = os.getenv('PENGUIN_SECRET_KEY')
+
+# algoritmo utilizado para crear los tokens
+ALGORITHM = os.getenv('PENGUIN_ALGORITHM')
 
 # guarda los tokens generados para los servicios
 tokens = {}
