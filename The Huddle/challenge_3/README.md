@@ -1,1 +1,1 @@
-# Challenge 3
+# The Huddle - Challenge 3

@@ -1,0 +1,111 @@
+{
+  "services": {
+    "service1": {
+      "name": "Service 1",
+      "description": "This is service 1",
+      "url": "https://service1.com"
+    },
+    "service2": {
+      "name": "Service 2",
+      "description": "This is service 2",
+      "url": "https://service2.com"
+    }
+  },
+  "severity": {
+    "level": {
+      "low": "Low severity",
+      "medium": "Medium severity",
+      "high": "High severity"
+    },
+    "Type": {
+      "INFO": {
+        "level": "low",
+        "messages": [
+          "Servicio iniciado correctamente.",
+          "Petición recibida satisfactoriamente.",
+          "Proceso ejecutado sin errores."
+        ]
+      },
+      "WARNING": {
+        "level": "medium",
+        "messages": [
+          "Tiempo de respuesta más alto de lo normal.",
+          "Uso de memoria cercano al límite.",
+          "Token de autenticación a punto de expirar."
+        ]
+      },
+      "ERROR": {
+        "level": "high",
+        "messages": [
+          "Fallo al conectar con la base de datos.",
+          "Excepción no controlada en el servicio.",
+          "Error de escritura en el archivo de log."
+        ]
+      },
+      "CRITICAL": {
+        "level": "high",
+        "messages": [
+          "Dependencia externa inalcanzable.",
+          "Corrupción de datos detectada.",
+          "Error en sistema central de enrutamiento."
+        ]
+      },
+      "UNKNOWN": {
+        "level": "medium",
+        "messages": [
+          "Código de estado inesperado.",
+          "Se produjo un comportamiento no documentado.",
+          "Resultado indeterminado."
+        ]
+      },
+      "DEBUG": {
+        "level": "low",
+        "messages": [
+          "Valor de variable interna: x=42",
+          "Inicio de ejecución de módulo X.",
+          "Se recibió payload con estructura válida."
+        ]
+      },
+      "NOTSET": {
+        "level": "low",
+        "messages": [
+          "Nivel de log no definido.",
+          "Sin clasificación de severidad.",
+          "Log sin contexto asignado."
+        ]
+      },
+      "NOTICE": {
+        "level": "low",
+        "messages": [
+          "Actualización de servicio disponible.",
+          "Cambio de configuración aplicado.",
+          "Usuario autenticado exitosamente."
+        ]
+      },
+      "FATAL": {
+        "level": "high",
+        "messages": [
+          "Detección de error irrecuperable.",
+          "Falló el arranque del sistema.",
+          "Abortando proceso por falla crítica."
+        ]
+      },
+      "ALERT": {
+        "level": "high",
+        "messages": [
+          "Requiere intervención inmediata.",
+          "El sistema alcanzó límite máximo de sesiones.",
+          "Disco lleno: riesgo de pérdida de datos."
+        ]
+      },
+      "EMERGENCY": {
+        "level": "high",
+        "messages": [
+          "Fallo total del sistema: iniciando protocolo de contingencia.",
+          "Sistema fuera de línea.",
+          "Todos los nodos reportan fallas simultáneas."
+        ]
+      }
+    }
+  }
+}

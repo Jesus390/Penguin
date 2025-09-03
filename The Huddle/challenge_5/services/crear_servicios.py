@@ -1,0 +1,95 @@
+from dotenv import load_dotenv
+
+import json
+import os
+import random
+import requests
+import threading
+import time
+
+
+# cargar variables de entorno del archivo .env
+load_dotenv()
+
+# ip del servidor
+HOST = os.getenv('HOST')
+
+# puerto del servidor
+PORT = os.getenv('PORT')
+
+def get_token(id_serv):
+    response = requests.post(f'http://{HOST}:{PORT}/token', json={'service_id': id_serv})
+    token = ''
+    if response.status_code == 200:
+        token = response.json()
+    else:
+        print(f"Error al solicitar la solicitud. Servicio: {id_serv}, Token: {response.status_code}")
+
+    return token
+
+def crear_servicio(id_serv:str, data:dict, tipo_log:dict, cantidad:int=10) -> None:
+    '''
+    @function, crear_servicio, recibe una lista de servicios y los ejecuta en segundo plano.
+    @param, id_serv, id del servicio
+    @param, data, datos del servicio
+    @param, tipo_log, tipo de log
+    @param, cantidad, cantidad de veces que se ejecuta el servicio
+    @return, None
+    '''
+    name = data['name']
+
+    token = get_token(id_serv)
+                                                  
+    cantidad = cantidad
+    while cantidad:
+        level = random.choice(list(tipo_log['level'].keys()))
+        type = random.choice([k for k, _ in tipo_log['Type'].items() if tipo_log['Type'][k]['level']==level])
+        message = random.choice(tipo_log['Type'][type]['messages'])
+
+        # headers = {'Authorization': Bearer "token"}
+        headers = {'Content-Type': 'application/json', 'Authorization': f"Bearer {token['token']}"}
+
+
+        # formato de envio de log
+        log = {
+            'id_service': id_serv,
+            'name': name,
+            'timestamp': time.ctime(time.time()),
+            'level': level,
+            'type': type,
+            'message': message
+        }
+
+        # envio de log
+        try:
+            print(f"Enviando datos del servicio {name} al servidor.")
+            response = requests.post(f'http://{HOST}:{PORT}/log', headers=headers, json=log)
+
+            if response.status_code == 200:
+                print(f'Servicio {name} ejecutado correctamente')
+                print(f"Respuesta: {response.text}")
+            else:
+                print(f'Error al ejecutar servicio {name}, STATUS CODE: {response.status_code}')
+        except Exception as e:
+            print(f"[{id_serv}] Error al enviar log: {e}")
+
+        # tiempo de espera antes de volver a generar un log
+        time.sleep(random.choice(range(1, 10)))
+        
+        # decrementar la cantidad de logs a generar
+        cantidad -= 1
+
+def iniciar_servicios() -> None:
+    with open('config_servicios.json', 'r', encoding='utf-8') as file:
+        config = json.load(file)
+
+    servicios = config['services']
+    tipo_log = config['severity']
+
+    for id_servicio, data in servicios.items():
+        thread = threading.Thread(target=crear_servicio, args=(id_servicio, data, tipo_log), daemon=False)
+        thread.start()
+                                     
+
+if __name__=="__main__":
+    iniciar_servicios()
