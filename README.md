@@ -21,11 +21,11 @@ Each language has its own `README-XX.md` file to support internationalization.
 ```bash
 code-pro/
 │
+├── extras/            # extras : hackatons/talleres/workshop
 ├── fundamentals/      # Stage 1: Fundamentals
 ├── the-dive/          # Stage 2: Advanced challenges
 ├── the-huddle/        # Stage 3: Weekly challenges
-├── the-hatch/         # Stage 4: Final specialization projects
-└── extras/            # Stage 5: hackatons/talleres/workshop
+└── the-hatch/         # Stage 4: Final specialization projects
 
 ---
 
