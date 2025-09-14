@@ -1,6 +1,7 @@
 from datetime import datetime
 
 import socket
+import selectors
 
 class Cliente:
     '''
@@ -117,6 +118,12 @@ class Servidor:
         '''
         self._socket.close()
 
+    def set_blockeante(self, opcion=True):
+        '''
+        Configura el modo bloqueante del servidor
+        '''
+        self._socket.setblocking(opcion)
+
     def __str__(self) -> str:
         return f"Servidor en {self.host}:{self.port}"
 
@@ -135,47 +142,100 @@ def main():
     servidor.crear()
     servidor.vincular()
     servidor.escuchar()
+    servidor.set_blockeante()
+    try:
+        while True:
+            # Aceptar la conección
+            socket_del_cliente, direccion_del_cliente = servidor.aceptar()
 
-    # Aceptar la conección
-    socket_del_cliente, direccion_del_cliente = servidor.aceptar()
+            print(f"Socket: {socket_del_cliente}")
+            print(f"Dirección: {direccion_del_cliente}")
 
-    print(f"Socket: {socket_del_cliente}")
-    print(f"Dirección: {direccion_del_cliente}")
+            # Recibir mensaje
+            mensaje = servidor.recibir(socket_del_cliente)
+            print(f"{direccion_del_cliente}: {mensaje}")
 
-    # Recibir mensaje
-    print(f"Mensaje: {servidor.recibir(socket_del_cliente)}")
+            # enviar mensaje
+            servidor.enviar(socket_del_cliente, mensaje)
+    except KeyboardInterrupt:
+        print("Interrucción por teclado.")
+    finally:
+        print("Cerrando servidor...")
+        servidor.cerrar()
+        print("Servidor cerrado correctamente.")
 
+def server(host="127.0.0.1", port=12345):
+    """
+    Implementación de un servidor utilizando las librerías 'socket' y 'selectors'
+    para manejar concurrencia y broadcast 
 
+    Parámetros
+    ----------
+    host: dirección IP
+    port: número de puerto
+    """
+
+    # Instancia del selector
+    selector = selectors.DefaultSelector()
+
+    # Captura errores
+    try:
+        # Intancia del socket
+        servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        # Vincular la dirección IP y el Puerto al servidor
+        print(f">> Vinculando el servidor en la dirección {host}:{port}")
+        servidor.bind((host, port))
+
+        # Servidor en modo de escucha
+        print(">> Servidor escuchando...")
+        servidor.listen()
+
+        # Configura el servidor en modo no bloqueante
+        # Se utiliza para aceptar conecciones y comunicaciones de
+        # forma asincrona
+        servidor.setblocking(False)
+
+        while True:
+            # Aceptar las conecciones
+            # socket.accept() devuelve una tupla de 2 valores (sock, addr)
+            # socket de la nueva coneccion y la dirección IP y Puerto de ese conección
+            print(">> Servidor esperando conección")
+            conn, addr = servidor.accept()
+
+            # Configura la nueva conección en modo no bloquente
+            conn.setblocking(False)
+
+            # Host de la nueva conección
+            host_conn = addr[0]
+
+            # Puerto de la nueva conección
+            port_conn = addr[1]
+
+            print(f"--> Nueva coneccion desde {host_conn}:{port_conn}")
+
+            # Maneja la nueva conección
+            with conn:
+                while True:        
+                    # Guarda los datos enviados desde la nueva conección
+                    datos = conn.recv(1024)
+
+                    # Verifica si los datos enviados no está vacio
+                    if not datos: break
+
+                    # Imprime los datos enviados por la conección
+                    mensaje = datos.decode("utf-8")
+                    print(f"{addr}: {mensaje}")
+
+                    # Reenviamos los datos a la conección
+                    datos = f">> {host_conn}:{port_conn}= {mensaje}".encode("utf-8")
+                    conn.send(datos)
+    except KeyboardInterrupt:
+        print("Interrución por teclado.")
+    except Exception as e:
+        print(f"Ocurrió un error: {e}")
+    finally:
+        servidor.close()
 
 if __name__ == "__main__":
-    main()
-
-    # cliente_0 = {
-    #     "sock": "Socket 0",
-    #     "nombre": "Cliente 0"
-    # }
-    # cli_0 = Cliente(cliente_0)
-
-    # cliente_1 = {
-    #     "sock": "Socket 1",
-    #     "nombre": "Cliente 1"
-    # }
-    # cli_1 = Cliente(cliente_1)
-
-    # cliente_3 = {
-    #     "sock": "Socket 3",
-    #     "nombre": "Cliente 3"
-    # }
-    # cli_3 = Cliente(cliente_3)
-
-    # lista_de_conecciones = ListaDeClientes()
-    # print("Conecciones print 0:", lista_de_conecciones.conecciones)
-    # lista_de_conecciones.agregar(cli_0)
-    # lista_de_conecciones.agregar(cli_1)
-    # print("Conecciones print 1:", lista_de_conecciones.conecciones)
-    # lista_de_conecciones.eliminar(cli_0)
-    # lista_de_conecciones.agregar(cli_3)
-    # lista_de_conecciones.eliminar(cli_0)
-    # print("Coneccion print 2", lista_de_conecciones.conecciones)
-    # cliente_0_ = lista_de_conecciones.get_cliente(cli_3.sock)
-    # print("Cliente:", cliente_0_)
+    server()
