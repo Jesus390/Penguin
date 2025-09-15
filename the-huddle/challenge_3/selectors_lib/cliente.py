@@ -1,5 +1,11 @@
 import socket
 
+# Parámetros
+# Obs.: pasar como variables de entorno
+HOST = "127.0.0.1"
+PORT = 12345
+
+
 class ClienteChat():
     '''
     Chat cliente para envios de mensajes
@@ -44,7 +50,6 @@ class ClienteChat():
         if self._client_socket:
             mensaje_bytes = mensaje.encode('utf-8')
             self._client_socket.send(mensaje_bytes)
-            print(f"Mensaje enviado: {mensaje}")
         else:
             print("No hay conexión establecida")
 
@@ -53,9 +58,8 @@ class ClienteChat():
         Recibe un mensaje del servidor
         '''
         if self._client_socket:
-            mensaje_bytes = self._client_socket.recv(1024)
-            mensaje = mensaje_bytes.decode('utf-8')
-            print(f"Mensaje recibido: {mensaje}")
+            mensaje = self._client_socket.recv(1024)
+            print(mensaje.decode("utf-8"))
             # return mensaje
         else:
             print("No hay conexión establecida")
@@ -69,9 +73,6 @@ class ClienteChat():
 
 def main():
     import time
-
-    HOST = "127.0.0.1"
-    PORT = 12345
 
     # Instancia del Cliente
     cliente = ClienteChat(HOST, PORT)
@@ -88,7 +89,7 @@ def main():
                 
                     try:
                         intentos = 0
-                        mensaje = input(">> ")
+                        mensaje = input("--> Mensaje: ")
                         # Enviar mensaje
                         cliente.enviar(mensaje)
 
@@ -110,5 +111,17 @@ def main():
                 cliente.cerrar()
                 print("Socket cerrado con exitó.")
 
+def cliente_tmp():
+    # Instanciar el socket
+    cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Conectar al servidor
+    try:
+        cliente.connect((HOST, PORT))
+    except Exception as e:
+        print(f"No se pudo conectar con el servidor: {e}")
+    finally:
+        cliente.close()
+
 if __name__=="__main__":
-    main()
+    cliente_tmp()
