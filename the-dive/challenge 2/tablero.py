@@ -1,7 +1,7 @@
 class Tablero:
     color = "⬜"
 
-    def __init__(self, alto=10, ancho=10):
+    def __init__(self, alto:int=10, ancho:int=10):
         self.alto = alto
         self.ancho = ancho
         self._tablero = None
@@ -16,14 +16,24 @@ class Tablero:
         print("🟨" + ("🟨" * self.ancho) + "🟨")
 
 class Laberinto(Tablero):
-    def __init__(self, alto=10, ancho=10):
+    def __init__(self, alto:int=10, ancho:int=10):
         super().__init__(alto, ancho)
+        self._punto_inicial = None
 
-    def crear(self):
-        pass
-    
+    def punto_inicial(self, punto_inicial=None):
+        self._punto_inicial = punto_inicial if punto_inicial else (0, 0)
+        x, y = self._punto_inicial
+        self._tablero[self._punto_inicial[0]][self._punto_inicial[1]] = "🟩"
 
-if __name__=="__main__":
-    tablero = Tablero(ancho=20)
-    tablero.crear()
-    tablero.mostrar()
+    def punto_final(self, punto_final=None):
+        self._punto_final = punto_final if punto_final else (self.ancho-1, self.alto-1)
+        x, y = self._punto_final
+        self._tablero[x][y] = "🟥"
+
+
+if __name__ == "__main__":
+    lab = Laberinto(10, 10)
+    lab.crear()
+    lab.punto_inicial((1, 1))
+    lab.punto_final((6, 6))
+    lab.mostrar()
