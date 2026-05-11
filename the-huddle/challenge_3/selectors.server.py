@@ -1,25 +1,44 @@
 import socket
 import selectors
 
-sel = selectors.DefaultSelector()
-
+# Dirección IP del servidor
+# Para pruebas utilizando Docker
+# configurar la dirección a "0.0.0.0"
+# para escuchar fuera de Docker.
 SERVER_ADDR = '127.0.0.1'
+
+# Puerto para el servidor.
 SERVER_PORT = 12345
 
-# Crear socket del servidor
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((SERVER_ADDR, SERVER_PORT))
-server.listen()
-server.setblocking(False)
-
-print(f"Iniciando servidor en {SERVER_ADDR}:{SERVER_PORT}")
-
-sel.register(server, selectors.EVENT_READ)
-
-# Mantener lista de clientes
+# Mantener lista de clientes, guarda nuevas conecciones
+# establecidas con el servidor.
 clientes = set()
 
+# Primera etapa para capturar una posible excepción
+# lanzada por el teclado
 try:
+    
+    # Se crea un socket para que trabaje como un servidor.
+    # Se utiliza AF_INET para direcciones IPv4 y SOCK_STREAM
+    # que se baza en un socket de flujo orientada a conección.
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Vincular las direcciones IP y el Puerto al socket
+    server.bind((SERVER_ADDR, SERVER_PORT))
+
+    # Socket en escucha
+    server.listen()
+
+    # Se utiliza para que el socket funcione de forma concurrente
+    server.setblocking(False)
+
+    print(f"Iniciando servidor en {SERVER_ADDR}:{SERVER_PORT}")
+
+    # Instancia del selectors para menejar concurrencia.
+    sel = selectors.DefaultSelector()
+
+    # Se registra el servidor al selector, esto maneja la concurrencia.
+    sel.register(server, selectors.EVENT_READ)
     while True:
         events = sel.select(timeout=None)
         for key, mask in events:
