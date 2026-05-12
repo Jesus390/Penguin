@@ -39,5 +39,18 @@ class Ahorcado(JuegoDeLetras):
     def get_palabra(self):
         """"Devuelve la palabra secreta generada"""
         return self.__palabra_secreta
+    
+    def ocultar_letras(self, nivel=40):
+        """Oculta las letras de la palabra"""
+        letras_ocultas = {}
+        palabra_oculta = list(self.__palabra_secreta)
+        len_palabra_secreta = len(self.__palabra_secreta)
+        while len(letras_ocultas) < int((len_palabra_secreta*nivel)/100):
+            id_letra = random.randrange(0, len_palabra_secreta)
+            letras_ocultas[id_letra] = self.__palabra_secreta[id_letra]
+            palabra_oculta[id_letra] = "_"
+
+        return "".join(palabra_oculta)
+
 
 
