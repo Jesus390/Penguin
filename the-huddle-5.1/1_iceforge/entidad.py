@@ -23,10 +23,10 @@ class Ahorcado(JuegoDeLetras):
 
     def __init__(self):
         # Palabra generada
-        self.__palabra = None
+        self.__palabra_secreta = None
 
         # Lista de palabras a generar según el nivel seleccionado
-        self.__palabras = {
+        self.__lista_de_palabras = {
             "1": ["uno", "auto", "juego", "tres"],
             "2": ["familias", "archivo", "ahorcado", "proyecto"],
             "3": ["condicionales", "vocabulario", "interacciones"]
@@ -34,10 +34,10 @@ class Ahorcado(JuegoDeLetras):
 
     def seleccionar_palabra(self, nivel):
         """Selecciona una palabra"""
-        self.__palabra = random.choice(self.__palabras[str(nivel)])
+        self.__palabra_secreta = random.choice(self.__lista_de_palabras[str(nivel)])
 
     def get_palabra(self):
         """"Devuelve la palabra secreta generada"""
-        return self.__palabra
+        return self.__palabra_secreta
 
 
