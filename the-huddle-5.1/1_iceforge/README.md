@@ -1,16 +1,17 @@
-# 1 Iceforge
+# Iceforge
 
-# # Descripción
-Mini arcade desde línea de comando implementado con Python.
+## Descripción
+Mini arcade desde la línea de comandos implementado con Python.
 
-# # Prerequisitos
-- Python 3.10>
-- uv
+## Prerrequisitos
+* Python 3.10 o superior
+* `uv`
 
-# # # Opcionales
-- Docker
+### Opcionales
+* Docker
 
-# # Requirements/Commands
+## Instalación y Ejecución
+
 ```shell
 # Crear el entorno virtual con 'uv'
 uv venv
@@ -23,9 +24,20 @@ uv venv
 # Activar el entorno virtual en Linux/macOS
 source .venv/bin/activate
 
-# Instalar los repositorios
+# Instalar las dependencias del proyecto
 uv sync
 
 # Ejecutar el programa
 uv run main.py
+```
+
+## Ejecución con Docker (Opcional)
+Si prefieres ejecutar el juego usando Docker, puedes utilizar los siguientes comandos:
+
+```shell
+# Construir la imagen
+docker build -t iceforge .
+
+# Ejecutar el contenedor de forma interactiva (necesario para juegos de terminal)
+docker run -it iceforge
 ```
