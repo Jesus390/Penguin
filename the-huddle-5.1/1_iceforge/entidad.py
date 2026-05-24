@@ -31,7 +31,7 @@ class Entidad(ABC):
         pass
 
 
-class Ahorcado(Entidad  ):
+class Ahorcado(Entidad):
 
     def __init__(self):
         self.__vidas = 6
@@ -49,46 +49,65 @@ descubrirla arriesgando letras una por una. Por cada letra errónea,
 se dibuja progresivamente la figura de un monigote en una horca; 
 si el dibujo se completa antes de adivinarla, el jugador pierde.
 """)
-
-        self.__palabra = random.choice(self.__palabras)
-        self.__palabra_oculta = self.__ocultar_letras()
+        # Guardamos la palabra en minúsculas para evitar problemas de capitalización
+        self.__palabra = random.choice(self.__palabras).lower()
+        self.__ocultar_letras()
         print(self.__monigote())
-        print("".join(self.__palabra_oculta))
+        print(" ".join(self.__palabra_oculta))
     
     def entrada(self):
         while True:
-            prompt = input(">>")
-            if len(prompt) == 1:
+            prompt = input(">> ").strip().lower() # Limpia espacios y pasa a minúsculas
+            if len(prompt) == 1 and prompt.isalpha():
                 return prompt
-            print("Notice: Ingresa un carácter.")
+            print("Notice: Ingresa un único carácter válido (A-Z).")
     
     def update(self, entrada):
-        for i, letra in self.__letras_ocultas.items():
-            if entrada == letra:
+        acierto = False
+        # Recorremos todas las letras ocultas usando una copia de las llaves
+        # para poder modificar el diccionario dentro del bucle sin errores
+        for i in list(self.__letras_ocultas.keys()):
+            if entrada == self.__letras_ocultas[i]:
                 del self.__letras_ocultas[i]
-                self.__palabra_oculta[i] = letra
-                break
-        else:
-            self.__vidas = self.__vidas - 1
+                self.__palabra_oculta[i] = entrada
+                acierto = True # Marcamos que encontramos al menos una coincidencia
+                
+        if not acierto:
+            self.__vidas -= 1
             print("La letra no existe.")
     
     def verificar(self):
-       return True if self.__vidas == 0 else False 
+        # El juego termina si te quedas sin vidas (derrota) o si ya no quedan letras ocultas (victoria)
+        if self.__vidas == 0:
+            print(f"\n¡Perdiste! La palabra era: {self.__palabra}")
+            return True
+        if len(self.__letras_ocultas) == 0:
+            print(f"\n¡Felicidades, ganaste! Adivinaste la palabra: {self.__palabra}")
+            return True
+        return False 
 
     def renderizar(self):
         render = self.__monigote()
-        return render + "\n\n" + "".join(self.__palabra_oculta)
+        return render + "\n\n" + " ".join(self.__palabra_oculta)
 
     def __ocultar_letras(self):
-        """Oculta las letras de la palabra"""
+        """Oculta las letras de la palabra garantizando el porcentaje correcto"""
         self.__palabra_oculta = list(self.__palabra)
         len_palabra_secreta = len(self.__palabra)
-        while len(self.__letras_ocultas) < int((len_palabra_secreta*40)/100): # 40% de letras ocultas de la palabra original
+        objetivo_ocultas = int((len_palabra_secreta * 40) / 100)
+        
+        # Si la palabra es muy corta, nos aseguramos de ocultar al menos 1 letra
+        if objetivo_ocultas == 0:
+            objetivo_ocultas = 1
+
+        while len(self.__letras_ocultas) < objetivo_ocultas:
             id_letra = random.randrange(0, len_palabra_secreta)
-            self.__letras_ocultas[id_letra] = self.__palabra[id_letra]
-            self.__palabra_oculta[id_letra] = "_"
-        return self.__palabra_oculta
-    
+            # Evitamos duplicar índices para no generar un bucle infinito
+            if id_letra not in self.__letras_ocultas:
+                self.__letras_ocultas[id_letra] = self.__palabra[id_letra]
+                self.__palabra_oculta[id_letra] = "_"
+
+
     def __monigote(self):
         dibujar_monigote = {
             6: "\t._____._\n\t|/_\\_/_\\\n\t|      |\n\t|\n\t|\n\t|\n\t|", 
@@ -102,3 +121,38 @@ si el dibujo se completa antes de adivinarla, el jugador pierde.
         return dibujar_monigote[self.__vidas]
 
 
+
+class Adivinanza(Entidad):
+    def play(self):
+        return "Jugando Adivinanza"
+
+    def entrada(self):
+        paso = input(">>")
+        return paso
+    
+    def verificar(self):
+        return True
+    
+    def update(self, entrada):
+        return "Juego actualizado"
+    
+    def renderizar(self):
+        return "Juego renderizado"
+
+class DescubrePalabra(Entidad):
+
+    def play(self):
+        return "Jugando Descubre la Palabra"
+
+    def entrada(self):
+        paso = input(">>")
+        return paso
+    
+    def verificar(self):
+        return True
+    
+    def update(self, entrada):
+        return "Juego actualizado"
+    
+    def renderizar(self):
+        return "Juego renderizado"
