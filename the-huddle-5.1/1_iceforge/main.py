@@ -1,6 +1,5 @@
-def main():
-    print("Hello from 1-iceforge!")
+from game import Game
 
-
-if __name__ == "__main__":
-    main()
+if __name__=="__main__":
+    game = Game()
+    game.run()
