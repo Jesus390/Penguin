@@ -123,36 +123,115 @@ si el dibujo se completa antes de adivinarla, el jugador pierde.
 
 
 class Adivinanza(Entidad):
+    """Juego de adivinar un acertijo con pistas"""
+
+    def __init__(self):
+        self.__acertijos = [
+            {"pregunta": "Tengo agujeros pero guardo agua. ¿Qué soy?", "respuesta": "esponja"},
+            {"pregunta": "Tengo llaves pero no abro cerraduras. ¿Qué soy?", "respuesta": "piano"},
+            {"pregunta": "Cuanto más largo es, más corto se vuelve. ¿Qué es?", "respuesta": "vida"}
+        ]
+        self.__juego_actual = {}
+        self.__intento_usuario = ""
+        self.__intentos_restantes = 3
+        self.__ganado = False
+
     def play(self):
-        return "Jugando Adivinanza"
+        print("""
+\t\t.: Adivinanza :.
+Lee el acertijo atentamente e intenta resolverlo.
+¡Tienes un máximo de 3 intentos!
+""")
+        self.__juego_actual = random.choice(self.__acertijos)
+        self.__intentos_restantes = 3
+        self.__ganado = False
 
     def entrada(self):
-        paso = input(">>")
-        return paso
-    
-    def verificar(self):
-        return True
-    
+        while True:
+            prompt = input("Tu respuesta >> ").strip().lower()
+            if prompt:
+                return prompt
+            print("Notice: No puedes dejar la respuesta vacía.")
+
     def update(self, entrada):
-        return "Juego actualizado"
-    
+        self.__intento_usuario = entrada
+        if self.__intento_usuario == self.__juego_actual["respuesta"]:
+            self.__ganado = True
+        else:
+            self.__intentos_restantes -= 1
+            print(f"Respuesta incorrecta. Intentos restantes: {self.__intentos_restantes}")
+
+    def verificar(self):
+        if self.__ganado:
+            print(f"\n¡Correcto! Has resuelto el acertijo.")
+            return True
+        if self.__intentos_restantes == 0:
+            print(f"\n¡Perdiste! La respuesta correcta era: {self.__juego_actual['respuesta']}")
+            return True
+        return False
+
     def renderizar(self):
-        return "Juego renderizado"
+        if self.__ganado or self.__intentos_restantes == 0:
+            return ""
+        return f"\nAcertijo: {self.__juego_actual['pregunta']}"
+
 
 class DescubrePalabra(Entidad):
+    """Juego de ordenar letras desordenadas (Anagrama)"""
+
+    def __init__(self):
+        self.__banco_palabras = ["terminal", "consola", "arcade", "codigo", "computadora"]
+        self.__palabra_secreta = ""
+        self.__palabra_desordenada = ""
+        self.__intento_usuario = ""
+        self.__intentos_restantes = 4
+        self.__ganado = False
 
     def play(self):
-        return "Jugando Descubre la Palabra"
+        print("""
+\t\t.: Descubre la Palabra :.
+Las letras de la palabra están completamente desordenadas.
+Ordénalas correctamente. ¡Tienes 4 intentos!
+""")
+        self.__palabra_secreta = random.choice(self.__banco_palabras)
+        self.__intentos_restantes = 4
+        self.__ganado = False
+        
+        # Desordenar las letras garantizando que no queden igual a la original
+        letras = list(self.__palabra_secreta)
+        while "".join(letras) == self.__palabra_secreta:
+            random.shuffle(letras)
+        self.__palabra_desordenada = "".join(letras)
 
     def entrada(self):
-        paso = input(">>")
-        return paso
-    
-    def verificar(self):
-        return True
-    
+        while True:
+            prompt = input("Palabra ordenada >> ").strip().lower()
+            if prompt.isalpha():
+                return prompt
+            print("Notice: Ingresa solo texto sin números ni espacios.")
+
     def update(self, entrada):
-        return "Juego actualizado"
-    
+        self.__intento_usuario = entrada
+        if self.__intento_usuario == self.__secreta_o_normalizada():
+            self.__ganado = True
+        else:
+            self.__intentos_restantes -= 1
+            print(f"No es la palabra correcta. Intentos restantes: {self.__intentos_restantes}")
+
+    def verificar(self):
+        if self.__ganado:
+            print(f"\n¡Increíble! Descubriste la palabra: {self.__palabra_secreta}")
+            return True
+        if self.__intentos_restantes == 0:
+            print(f"\nTe quedaste sin intentos. La palabra era: {self.__palabra_secreta}")
+            return True
+        return False
+
     def renderizar(self):
-        return "Juego renderizado"
+        if self.__ganado or self.__intentos_restantes == 0:
+            return ""
+        return f"\nLetras desordenadas: [ {', '.join(self.__palabra_desordenada.upper())} ]"
+
+    def __secreta_o_normalizada(self):
+        # Helper interno para comparar de forma segura
+        return self.__palabra_secreta.lower()
