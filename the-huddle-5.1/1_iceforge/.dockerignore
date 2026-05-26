@@ -1,0 +1,32 @@
+# Control de versiones
+.git
+.gitignore
+
+# El propio Dockerfile no necesita estar dentro de la imagen
+Dockerfile
+.dockerignore
+
+# Entornos virtuales
+venv/
+.venv/
+env/
+
+.uv/
+
+# Caché de Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Variables de entorno con secretos
+.env
+
+# Editores e IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
